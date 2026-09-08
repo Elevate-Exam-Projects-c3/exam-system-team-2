@@ -16,14 +16,9 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
         }
         public async Task<RequestResponse> Handle(CreateOptionsCommand request, CancellationToken cancellationToken)
         {
-            //1. Question Validation :
-            var questionExists = await _questionOptionRepo.GetByIdAsync(request.QuestionId);
-            if (questionExists == null)
-            {
-                throw new KeyNotFoundException($"Question with ID {request.QuestionId} not found.");
-            }
+            
 
-            //2. Validate Options Count and Correctness :
+            //1. Validate Options Count and Correctness :
             if (request.Options.Count < 2)
             {
                 throw new InvalidOperationException("A question must have at least two options.");
@@ -34,7 +29,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
                 throw new InvalidOperationException("A question must have exactly one correct option.");
             }
 
-            //3. Map OptionItems to QuestionOptions : 
+            //2. Map OptionItems to QuestionOptions : 
             var options = request.Options.Select(option => new QuestionOption
             {
                 QuestionId = request.QuestionId,
@@ -42,10 +37,10 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
                 IsCorrect = option.IsCorrect
             }).ToList();
 
-            //4. Add Options : 
+            //3. Add Options : 
             await _questionOptionRepo.AddRangeAsync(options);
 
-            //5. Return Success Response :
+            //4. Return Success Response :
             return RequestResponse.Ok("Options created successfully.");
         }
     }

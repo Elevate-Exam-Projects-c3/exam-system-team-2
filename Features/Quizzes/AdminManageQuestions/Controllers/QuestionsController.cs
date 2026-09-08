@@ -1,4 +1,5 @@
-﻿using exam_system.Features.Quizzes.AdminManageQuestions.Mappings;
+﻿using exam_system.Features.Quizzes.AdminManageQuestions.Commands;
+using exam_system.Features.Quizzes.AdminManageQuestions.Mappings;
 using exam_system.Features.Quizzes.AdminManageQuestions.ViewModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,16 +8,17 @@ namespace exam_system.Features.Shared
 {
     [ApiController]
     [Route("api/admin/questions")]
-    public class AddQuestionWithOptionsController : ControllerBase
+    public class QuestionsController : ControllerBase
     {
 
         private readonly IMediator _mediator;
 
-        public AddQuestionWithOptionsController(IMediator mediator)
+        public QuestionsController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
+        //1. Add Question with Options EndPoint :
         [HttpPost]
         public async Task<ActionResult<EndpointResponse<AddQuestionWithOptionsResponseViewModel>>> AddQuestionWithOptions([FromBody] AddQuestionWithOptionsViewModel request)
         {
@@ -24,7 +26,17 @@ namespace exam_system.Features.Shared
 
             //Map From ResponseDto to ResponseViewModel
             var viewModelResult = result.MapTo(d => d.ToViewModel());
+
             return Ok(EndpointResponse<AddQuestionWithOptionsResponseViewModel>.FromResult(viewModelResult));
+        }
+
+        //2. Delete Question EndPoint :
+
+        [HttpDelete("{questionId:Guid}")]
+        public async Task<ActionResult<EndpointResponse>> DeleteQuestion(Guid questionId)
+        {
+            var result = await _mediator.Send(new DeleteQuestionCommand(questionId));
+            return StatusCode(result.StatusCode, EndpointResponse.FromResult(result));
         }
     }
 }
