@@ -40,6 +40,7 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Handlers
             var diplomaDtos = await diplomas
                 .Select(d => new DiplomaDto
                 {
+                    Id = d.Id,
                     Title = d.Title,
                     Description = d.Description,
                     CountOfQuizzes = d.Quizzes.Count(q => q.Status == QuizStatus.Published)
