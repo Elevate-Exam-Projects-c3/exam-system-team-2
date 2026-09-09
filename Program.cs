@@ -17,11 +17,6 @@ builder.Services.AddPersistenceServices(builder.Configuration);
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
 
-//builder.Services.AddMediatR(cfg =>
-//{
-//    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-//});
-
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();

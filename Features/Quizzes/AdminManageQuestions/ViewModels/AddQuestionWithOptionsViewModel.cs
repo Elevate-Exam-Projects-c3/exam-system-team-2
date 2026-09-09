@@ -10,11 +10,4 @@
 
         public List<OptionViewModel> Options { get; set; } = [];
     }
-
-    public class OptionViewModel
-    {
-        public string OptionText { get; set; } = string.Empty;
-
-        public bool IsCorrect { get; set; }
-    }
 }

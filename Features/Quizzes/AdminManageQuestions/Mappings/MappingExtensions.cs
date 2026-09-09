@@ -18,17 +18,6 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Mappings
                 request.Explanation,
                 request.Options.Select(o => new OptionItem(o.OptionText, o.IsCorrect)).ToList());
         }
-        // Mapping method to convert AddQuestionWithOptionsResponseDto to AddQuestionWithOptionsResponseViewModel
-        public static AddQuestionWithOptionsResponseViewModel ToViewModel(
-          this AddQuestionWithOptionsResponseDto response)
-        {
-            return new AddQuestionWithOptionsResponseViewModel
-            {
-                QuestionId = response.QuestionId
-            };
-        }
-
-
     }
 }
 
