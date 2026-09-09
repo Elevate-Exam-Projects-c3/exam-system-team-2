@@ -8,7 +8,7 @@ using MediatR;
 namespace exam_system.Features.Quizzes.AdminManageQuestions.Orchestrators.OrchestratorHandlers
 {
     public class AddQuestionWithOptionsOrchestratorHandler : IRequestHandler<AddQuestionWithOptionsOrchestrator,
-            RequestResponse<AddQuestionWithOptionsResponseDto>>
+            RequestResponse<Guid>>
     {
         private readonly IMediator _mediator;
         private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +18,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Orchestrators.Orches
             _mediator = mediator;
             _unitOfWork = unitOfWork;
         }
-        public async Task<RequestResponse<AddQuestionWithOptionsResponseDto>> Handle(AddQuestionWithOptionsOrchestrator request, CancellationToken cancellationToken)
+        public async Task<RequestResponse<Guid>> Handle(AddQuestionWithOptionsOrchestrator request, CancellationToken cancellationToken)
         {
 
             //1. Quiz Validation
@@ -48,7 +48,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Orchestrators.Orches
             //5. Get QuestionId from Result : 
             if (questionResult.Data == null)
             {
-                throw new InvalidOperationException("Question creation did not return a QuestionId.");
+                return RequestResponse<Guid>.Fail("Question creation did not return a QuestionId.");
             }
             var questionId = questionResult.Data;
 
@@ -65,8 +65,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Orchestrators.Orches
                 QuestionId = questionId
             };
 
-            return RequestResponse<AddQuestionWithOptionsResponseDto>
-                .Created(  response,"Question and options created successfully.");
+            return RequestResponse<Guid>.Created(questionId, "Question and options created successfully.");
         }
     }
 }

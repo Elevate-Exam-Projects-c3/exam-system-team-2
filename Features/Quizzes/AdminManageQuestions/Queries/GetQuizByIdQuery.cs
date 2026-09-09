@@ -3,8 +3,5 @@ using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminManageQuestions.Queries
 {
-    public record GetQuizByIdQuery(Guid QuizId) : IRequest<QuizDto?>
-    {
-
-    }
+    public record GetQuizByIdQuery(Guid QuizId) : IRequest<QuizDto?>;
 }

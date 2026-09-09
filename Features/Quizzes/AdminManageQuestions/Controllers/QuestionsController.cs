@@ -20,14 +20,10 @@ namespace exam_system.Features.Shared
 
         //1. Add Question with Options EndPoint :
         [HttpPost]
-        public async Task<ActionResult<EndpointResponse<AddQuestionWithOptionsResponseViewModel>>> AddQuestionWithOptions([FromBody] AddQuestionWithOptionsViewModel request)
+        public async Task<ActionResult<EndpointResponse<Guid>>> AddQuestionWithOptions([FromBody] AddQuestionWithOptionsViewModel request)
         {
             var result = await _mediator.Send(request.ToOrchestrator());
-
-            //Map From ResponseDto to ResponseViewModel
-            var viewModelResult = result.MapTo(d => d.ToViewModel());
-
-            return Ok(EndpointResponse<AddQuestionWithOptionsResponseViewModel>.FromResult(viewModelResult));
+            return Ok(EndpointResponse<Guid>.FromResult(result));
         }
 
         //2. Delete Question EndPoint :

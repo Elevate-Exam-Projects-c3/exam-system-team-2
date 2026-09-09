@@ -11,6 +11,6 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Orchestrators
         string Text,
         string? Explanation,
         List<OptionItem> Options
-    ) : IRequest<RequestResponse<AddQuestionWithOptionsResponseDto>>;
+    ) : IRequest<RequestResponse<Guid>>;
 
 }

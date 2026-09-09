@@ -3,9 +3,5 @@ using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminManageQuestions.Commands
 {
-    public record CreateOptionsCommand(Guid QuestionId , List<OptionItem> Options) : IRequest<RequestResponse>
-    {
-
-    }
-    public record OptionItem( string OptionText, bool IsCorrect);
+    public record CreateOptionsCommand(Guid QuestionId, List<OptionItem> Options) : IRequest<RequestResponse>;
 }
