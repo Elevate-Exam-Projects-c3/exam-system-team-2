@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace exam_system.Features.Diplomas.AdminCreateDiploma
+namespace exam_system.Features.Diplomas.BrowseDiplomas
 {
     public class DiplomaDto
     {

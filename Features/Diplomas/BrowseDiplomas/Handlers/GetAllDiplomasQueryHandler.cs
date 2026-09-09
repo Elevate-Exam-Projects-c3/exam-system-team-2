@@ -1,7 +1,6 @@
 ﻿using exam_system.Common.Enums;
 using exam_system.Domain.Entities.Diplomas;
-using exam_system.Features.Diplomas.AdminCreateDiploma;
-using exam_system.Features.Diplomas.BrowseDiplomas.Commands;
+using exam_system.Features.Diplomas.BrowseDiplomas.Queries;
 using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
 using MediatR;
