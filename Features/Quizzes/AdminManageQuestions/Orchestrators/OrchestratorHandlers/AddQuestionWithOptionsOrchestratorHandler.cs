@@ -59,12 +59,6 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Orchestrators.Orches
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             //8. Return Response :
-
-            var response = new AddQuestionWithOptionsResponseDto
-            {
-                QuestionId = questionId
-            };
-
             return RequestResponse<Guid>.Created(questionId, "Question and options created successfully.");
         }
     }
