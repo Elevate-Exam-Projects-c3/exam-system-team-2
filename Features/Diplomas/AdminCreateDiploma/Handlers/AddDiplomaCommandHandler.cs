@@ -23,13 +23,15 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Handlers
         }
         #endregion
 
-        #region Operation 
+        #region Handle Operation 
         public async Task<RequestResponse<Unit>> Handle(AddDiplomaCommand request, CancellationToken cancellationToken)
         {
-            var existingDiploma = await _diplomaRepo.GetAll().FirstOrDefaultAsync(d => d.Title == request.Title, cancellationToken);
-            if(existingDiploma != null) {
-                return RequestResponse<Unit>.Fail($"Diploma with {request.Title} title already exists.");
-            }
+            var diplomaExists = await _diplomaRepo.GetAll().AnyAsync(d => d.Title == request.Title, cancellationToken);
+
+
+            if (diplomaExists) 
+                return RequestResponse<Unit>.Fail($"Diploma with title {request.Title} title already exists.");
+            
 
             var diploma = new Diploma
             {

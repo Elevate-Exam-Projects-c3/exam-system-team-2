@@ -9,14 +9,14 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DiplomaController : ControllerBase
+    public class AddDiplomaController : ControllerBase
     {
         #region Fields
         private readonly IMediator _mediator;
         #endregion
 
         #region Constructor
-        public DiplomaController(IMediator mediator)
+        public AddDiplomaController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -27,7 +27,11 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDiploma([FromBody] DiplomaViewModel  diplomaViewModel)
         {
-            var requestResponse = await _mediator.Send(new AddDiplomaCommand(diplomaViewModel.Title, diplomaViewModel.Description, diplomaViewModel.ImageUrl));
+            var requestResponse = await _mediator.Send(
+                new AddDiplomaCommand(
+                    diplomaViewModel.Title, 
+                    diplomaViewModel.Description, 
+                    diplomaViewModel.ImageUrl));
 
             var endpointResponse = new EndpointResponse
             {
