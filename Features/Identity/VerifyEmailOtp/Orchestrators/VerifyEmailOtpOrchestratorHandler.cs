@@ -1,5 +1,4 @@
-using MediatR;
-using exam_system.Domain.Entities.Identity;
+﻿using MediatR;
 using exam_system.Features.Identity.VerifyEmailOtp.Commands;
 using exam_system.Features.Identity.VerifyEmailOtp.Queries;
 using exam_system.Features.Shared;
@@ -7,20 +6,20 @@ using exam_system.Persistence.DataAccess;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 
-public class VerifyEmailOtpCommandHandler : IRequestHandler<VerifyEmailOtpCommand, RequestResponse<VerifyEmailOtpResponse>>
+public class VerifyEmailOtpOrchestratorHandler : IRequestHandler<VerifyEmailOtpOrchestratorRequest, RequestResponse<VerifyEmailOtpResponse>>
 {
     private readonly IMediator _mediator;
     private readonly IUnitOfWork _unitOfWork;
 
-    public VerifyEmailOtpCommandHandler(IMediator mediator, IUnitOfWork unitOfWork)
+    public VerifyEmailOtpOrchestratorHandler(IMediator mediator, IUnitOfWork unitOfWork)
     {
         _mediator = mediator;
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<RequestResponse<VerifyEmailOtpResponse>> Handle(VerifyEmailOtpCommand request, CancellationToken cancellationToken)
+    public async Task<RequestResponse<VerifyEmailOtpResponse>> Handle(VerifyEmailOtpOrchestratorRequest request, CancellationToken cancellationToken)
     {
-        // ─── Phase 1: Precondition Validation ─────────────────────────────
+        // ─── Phase 1: Precondition Validation (Sub-Queries) ───────────────
         var user = await _mediator.Send(new GetUserByEmailQuery(request.Email), cancellationToken);
         if (user == null)
         {
@@ -50,7 +49,7 @@ public class VerifyEmailOtpCommandHandler : IRequestHandler<VerifyEmailOtpComman
             return RequestResponse<VerifyEmailOtpResponse>.Fail("OTP code has expired. Please request a new one.", 400);
         }
 
-        // ─── Phase 2: OTP Validation ──────────────────────────────────────
+        // ─── Phase 2: OTP Cryptographic Validation ────────────────────────
         var isMatch = await _mediator.Send(new ValidateOtpHashQuery(request.Otp, latestOtp.OtpHash), cancellationToken);
 
         if (!isMatch)
@@ -82,7 +81,13 @@ public class VerifyEmailOtpCommandHandler : IRequestHandler<VerifyEmailOtpComman
         await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            await _mediator.Send(new ActivateUserAndConsumeOtpSubCommand(user, latestOtp), cancellationToken);
+            // Stage OTP consumption (EmailVerificationOtp aggregate only)
+            await _mediator.Send(new ConsumeOtpSubCommand(latestOtp), cancellationToken);
+
+            // Stage user activation (ApplicationUser aggregate only)
+            await _mediator.Send(new ActivateUserAccountSubCommand(user), cancellationToken);
+
+            // Atomic database commit
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             await _unitOfWork.CommitTransactionAsync(cancellationToken);
         }

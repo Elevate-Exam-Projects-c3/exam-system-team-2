@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
-using exam_system.Features.Identity.VerifyEmailOtp.Commands;
+using exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Validators;
 
-public class VerifyEmailOtpCommandValidator : AbstractValidator<VerifyEmailOtpCommand>
+public class VerifyEmailOtpOrchestratorRequestValidator : AbstractValidator<VerifyEmailOtpOrchestratorRequest>
 {
-    public VerifyEmailOtpCommandValidator()
+    public VerifyEmailOtpOrchestratorRequestValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email is required.")

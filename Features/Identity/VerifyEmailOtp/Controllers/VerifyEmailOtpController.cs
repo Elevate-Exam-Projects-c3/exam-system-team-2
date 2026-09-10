@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using exam_system.Features.Identity.VerifyEmailOtp.Commands;
+using exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 using exam_system.Features.Shared;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Controllers;
@@ -18,10 +18,10 @@ public class VerifyEmailOtpController : ControllerBase
 
     [HttpPost("verify-otp")]
     public async Task<ActionResult<EndpointResponse<VerifyEmailOtpResponse>>> VerifyOtp(
-        [FromBody] VerifyEmailOtpCommand command,
+        [FromBody] VerifyEmailOtpOrchestratorRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(command, cancellationToken);
+        var result = await _mediator.Send(request, cancellationToken);
         var response = EndpointResponse<VerifyEmailOtpResponse>.FromResult(result);
 
         return StatusCode(result.StatusCode, response);
