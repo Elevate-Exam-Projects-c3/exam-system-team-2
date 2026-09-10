@@ -1,5 +1,4 @@
-﻿using exam_system.Features.Diplomas.AdminCreateDiploma;
-using exam_system.Features.Diplomas.BrowseDiplomas.Commands;
+﻿using exam_system.Features.Diplomas.BrowseDiplomas.Queries;
 using exam_system.Features.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Http;
