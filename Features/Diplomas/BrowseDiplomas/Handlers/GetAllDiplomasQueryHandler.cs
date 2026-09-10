@@ -1,7 +1,6 @@
 ﻿using exam_system.Common.Enums;
 using exam_system.Domain.Entities.Diplomas;
-using exam_system.Features.Diplomas.AdminCreateDiploma;
-using exam_system.Features.Diplomas.BrowseDiplomas.Commands;
+using exam_system.Features.Diplomas.BrowseDiplomas.Queries;
 using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
 using MediatR;
@@ -41,6 +40,7 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Handlers
             var diplomaDtos = await diplomas
                 .Select(d => new DiplomaDto
                 {
+                    Id = d.Id,
                     Title = d.Title,
                     Description = d.Description,
                     CountOfQuizzes = d.Quizzes.Count(q => q.Status == QuizStatus.Published)

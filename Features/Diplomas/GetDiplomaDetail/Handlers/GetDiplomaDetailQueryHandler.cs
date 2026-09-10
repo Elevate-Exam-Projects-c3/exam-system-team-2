@@ -1,5 +1,5 @@
 ﻿using exam_system.Domain.Entities.Diplomas;
-using exam_system.Features.Diplomas.AdminCreateDiploma;
+using exam_system.Features.Diplomas.BrowseDiplomas;
 using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
 using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
 {
-    public class GetDiplomaDetailCommandHandler:IRequestHandler<GetDiplomaDetailByIdQuery, RequestResponse<DiplomaDto?>>
+    public class GetDiplomaDetailQueryHandler:IRequestHandler<GetDiplomaDetailByIdQuery, RequestResponse<DiplomaDto?>>
     {
         #region Fields
         private readonly IGenericRepository<Diploma> _diplomaRepo;
         #endregion
         #region Constructor 
-        public GetDiplomaDetailCommandHandler(IGenericRepository<Diploma> diplomaRepo)
+        public GetDiplomaDetailQueryHandler(IGenericRepository<Diploma> diplomaRepo)
         {
             _diplomaRepo = diplomaRepo;
         }
