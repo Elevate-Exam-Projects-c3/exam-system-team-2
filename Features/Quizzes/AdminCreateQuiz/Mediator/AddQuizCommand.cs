@@ -1,11 +1,12 @@
 ﻿using exam_system.Domain.Entities.Quizzes;
+using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
 using FluentValidation;
 using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
 {
-    public record AddQuizCommand(string Title , int DurationMinutes , int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<bool>;
+    public record AddQuizCommand(string Title , int DurationMinutes , int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<Result<int>>;
 
     internal class AddQuizCommandValidator : AbstractValidator<AddQuizCommand>
     {
@@ -19,11 +20,17 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
         }
     }
 
-    internal class AddQuizCommandHandler : IRequestHandler<AddQuizCommand , bool>
+    internal class AddQuizCommandHandler : IRequestHandler<AddQuizCommand , Result<int>>
     {
         private readonly IGenericRepository<Quiz> _quizRepository ;
         private readonly IUnitOfWork _unitOfWork ;
-        public Task<bool> Handle(AddQuizCommand request, CancellationToken cancellationToken)
+
+        public AddQuizCommandHandler(IGenericRepository<Quiz> quizRepository, IUnitOfWork unitOfWork)
+        {
+            _quizRepository = quizRepository;
+            _unitOfWork = unitOfWork;
+        }
+        public async Task<Result<int>> Handle(AddQuizCommand request, CancellationToken cancellationToken)
         {
             var quiz = new Quiz
             {
@@ -37,8 +44,12 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
             
             _quizRepository.Add(quiz);
 
-            _unitOfWork.SaveChangesAsync(cancellationToken);
-            return Task.FromResult(true);
+            var addedRowAffected = await _unitOfWork.SaveChangesAsync(cancellationToken);
+            if(addedRowAffected > 0)
+            {
+                return Result<int>.Success(addedRowAffected);
+            }
+            return Result<int>.Failure("Failed to add quiz.");
         }
     }
 }
