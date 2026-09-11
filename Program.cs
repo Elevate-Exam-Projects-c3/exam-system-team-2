@@ -59,9 +59,12 @@ builder.Services.AddCommonServices();
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
+
 
 // Seed Database automatically on startup
 using (var scope = app.Services.CreateScope())
