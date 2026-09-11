@@ -43,6 +43,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         await _dbSet.AddAsync(entity);
     }
+    public void Add(T entity)
+    {
+        _dbSet.Add(entity);
+    }
 
     public async Task AddRangeAsync(IEnumerable<T> entities)
     {

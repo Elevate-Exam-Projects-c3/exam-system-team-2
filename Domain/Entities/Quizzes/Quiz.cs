@@ -13,10 +13,14 @@ public class Quiz : BaseEntity
     public string Title { get; set; } = string.Empty;
     public string? Instructions { get; set; }
     public int DurationMinutes { get; set; }
-    public int PassScore { get; set; } = 60;
-    public int? MaxAttempts { get; set; }
+    public int Score { get; set; }
+    public int PassScore { get; set; } 
+    public int? MaxAttempts { get; set; } = 3;     
     public QuizStatus Status { get; set; } = QuizStatus.Draft;
     public DateTime? PublishedAt { get; set; }
+
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     // Navigations
     public ICollection<Question> Questions { get; set; } = new List<Question>();

@@ -26,6 +26,7 @@ builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
+
 // Seed Database automatically on startup
 using (var scope = app.Services.CreateScope())
 {

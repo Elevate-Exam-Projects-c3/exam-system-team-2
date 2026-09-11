@@ -9,6 +9,7 @@ public interface IGenericRepository<T> where T : BaseEntity
     IQueryable<T> GetAll();
     IQueryable<T> Get(Expression<Func<T, bool>> predicate);
     Task AddAsync(T entity);
+    public void Add(T entity);
     Task AddRangeAsync(IEnumerable<T> entities);
     void Update(T entity);
     Task UpdateAsync(T entity);
