@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using exam_system.Features.Identity.VerifyEmailOtp.Commands;
 using exam_system.Features.Identity.VerifyEmailOtp.Queries;
 using exam_system.Features.Shared;
@@ -6,7 +6,7 @@ using exam_system.Persistence.DataAccess;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 
-public class VerifyEmailOtpOrchestratorHandler : IRequestHandler<VerifyEmailOtpOrchestratorRequest, RequestResponse<VerifyEmailOtpResponse>>
+public class VerifyEmailOtpOrchestratorHandler : IRequestHandler<VerifyEmailOtpOrchestratorRequest, RequestResponse<bool>>
 {
     private readonly IMediator _mediator;
     private readonly IUnitOfWork _unitOfWork;
@@ -17,36 +17,36 @@ public class VerifyEmailOtpOrchestratorHandler : IRequestHandler<VerifyEmailOtpO
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<RequestResponse<VerifyEmailOtpResponse>> Handle(VerifyEmailOtpOrchestratorRequest request, CancellationToken cancellationToken)
+    public async Task<RequestResponse<bool>> Handle(VerifyEmailOtpOrchestratorRequest request, CancellationToken cancellationToken)
     {
         // ─── Phase 1: Precondition Validation (Sub-Queries) ───────────────
         var user = await _mediator.Send(new GetUserByEmailQuery(request.Email), cancellationToken);
         if (user == null)
         {
-            return RequestResponse<VerifyEmailOtpResponse>.Fail("User not found.", 404);
+            return RequestResponse<bool>.Fail("User not found.", 404);
         }
 
         if (user.EmailConfirmed)
         {
-            return RequestResponse<VerifyEmailOtpResponse>.Fail("Email is already verified.", 400);
+            return RequestResponse<bool>.Fail("Email is already verified.", 400);
         }
 
         var latestOtp = await _mediator.Send(new GetLatestActiveOtpByEmailQuery(request.Email), cancellationToken);
         if (latestOtp == null)
         {
-            return RequestResponse<VerifyEmailOtpResponse>.Fail("No active OTP found. Please request a new one.", 400);
+            return RequestResponse<bool>.Fail("No active OTP found. Please request a new one.", 400);
         }
 
         // AC3: Locked check (5 or more incorrect attempts)
         if (latestOtp.AttemptCount >= 5)
         {
-            return RequestResponse<VerifyEmailOtpResponse>.Fail("Too many failed attempts. This OTP has been locked. Please request a new one.", 400);
+            return RequestResponse<bool>.Fail("Too many failed attempts. This OTP has been locked. Please request a new one.", 400);
         }
 
         // AC2: Expiry check (exact 10 minutes)
         if (DateTime.UtcNow > latestOtp.ExpiresAt)
         {
-            return RequestResponse<VerifyEmailOtpResponse>.Fail("OTP code has expired. Please request a new one.", 400);
+            return RequestResponse<bool>.Fail("OTP code has expired. Please request a new one.", 400);
         }
 
         // ─── Phase 2: OTP Cryptographic Validation ────────────────────────
@@ -70,11 +70,11 @@ public class VerifyEmailOtpOrchestratorHandler : IRequestHandler<VerifyEmailOtpO
 
             if (latestOtp.AttemptCount >= 5)
             {
-                return RequestResponse<VerifyEmailOtpResponse>.Fail("Too many failed attempts. This OTP has been locked. Please request a new one.", 400);
+                return RequestResponse<bool>.Fail("Too many failed attempts. This OTP has been locked. Please request a new one.", 400);
             }
 
             var remainingAttempts = 5 - latestOtp.AttemptCount;
-            return RequestResponse<VerifyEmailOtpResponse>.Fail($"Invalid OTP. You have {remainingAttempts} attempt(s) remaining.", 400);
+            return RequestResponse<bool>.Fail($"Invalid OTP. You have {remainingAttempts} attempt(s) remaining.", 400);
         }
 
         // ─── Phase 3: Single Atomic Database Commit ───────────────────────
@@ -98,8 +98,6 @@ public class VerifyEmailOtpOrchestratorHandler : IRequestHandler<VerifyEmailOtpO
         }
 
         // ─── Phase 4: Success Response ────────────────────────────────────
-        return RequestResponse<VerifyEmailOtpResponse>.Ok(
-            new VerifyEmailOtpResponse(user.Id, user.Email, "Email verified successfully. Your account is now active."),
-            "Email verified successfully.");
+        return RequestResponse<bool>.Ok(true, "Email verified successfully. Your account is now active.");
     }
 }
