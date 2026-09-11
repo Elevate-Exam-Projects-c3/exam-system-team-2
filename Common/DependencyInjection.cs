@@ -1,4 +1,4 @@
-﻿using exam_system.Common.Services;
+using exam_system.Common.Services;
 using exam_system.Common.Services.Interfaces;
 
 namespace exam_system.Common;
@@ -10,6 +10,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IOtpService, OtpService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<ITokenService, TokenService>();
 
         return services;
     }
