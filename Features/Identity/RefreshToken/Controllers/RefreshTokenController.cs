@@ -48,7 +48,11 @@ public class RefreshTokenController : ControllerBase
             return StatusCode(result.StatusCode, errorResponse);
         }
 
-        var responseVm = new RefreshTokenResponseViewModel(result.Data!, "Bearer", 900, result.Message);
+        var responseVm = new RefreshTokenResponseViewModel(
+            result.Data!.AccessToken,
+            result.Data.TokenType,
+            result.Data.ExpiresIn,
+            result.Message);
         var successResponse = new EndpointResponse<RefreshTokenResponseViewModel>(
             true,
             result.StatusCode,
