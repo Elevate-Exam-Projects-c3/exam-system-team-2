@@ -4,6 +4,7 @@ using exam_system.Features.Diplomas.AdminUpdateDiploma.ViewModels;
 using exam_system.Features.Diplomas.BrowseDiplomas;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,8 @@ namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Controllers
         #endregion
 
         #region CRUD Operations
+
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync([FromRoute]Guid id, [FromBody]UpdateDiplomaViewModel diploma)
         {
