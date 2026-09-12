@@ -5,6 +5,8 @@ using MediatR;
 
 namespace exam_system.Features.Identity.Login.Handlers;
 
+using RefreshToken = exam_system.Domain.Entities.Identity.RefreshToken;
+
 public class CreateRefreshTokenSubCommandHandler : IRequestHandler<CreateRefreshTokenSubCommand, bool>
 {
     private readonly IGenericRepository<RefreshToken> _refreshTokenRepository;
