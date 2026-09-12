@@ -3,7 +3,6 @@ using exam_system.Features.Quizzes.AdminCreateQuiz.Mediator;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace exam_system.Application.AdminController
 {
@@ -20,9 +19,9 @@ namespace exam_system.Application.AdminController
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> AddQuiz([FromBody] AddQuizCommand command)
+        public async Task<IActionResult> AddQuiz([FromBody] AddQuizCommand command, CancellationToken cancellationToken)
         {
-            var result = await mediator.Send(command);
+            var result = await mediator.Send(command, cancellationToken);
             
             return CustomResult(result);
         }

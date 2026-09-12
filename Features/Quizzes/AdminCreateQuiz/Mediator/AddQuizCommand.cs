@@ -52,7 +52,6 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
             {
                 return ApiResponse<Guid>.Fail("Failed to create quiz.");
             }
-
         }
     }
 }
