@@ -1,6 +1,7 @@
 using exam_system.Common;
 using exam_system.Common.Behaviors;
 using exam_system.Domain.Entities.Diplomas;
+using exam_system.Features.Shared.CurrentUser;
 using exam_system.Persistence;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
@@ -20,6 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserId, CurrentUserId>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -59,7 +61,6 @@ builder.Services.AddCommonServices();
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
 
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
