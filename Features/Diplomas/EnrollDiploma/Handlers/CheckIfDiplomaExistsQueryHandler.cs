@@ -1,8 +1,8 @@
 ﻿using exam_system.Common.Enums;
 using exam_system.Domain.Entities.Diplomas;
 using exam_system.Domain.Entities.Quizzes;
+using exam_system.Features.Diplomas.EnrollDiploma.Queries;
 using exam_system.Features.Diplomas.GetDiplomaForEnrollment.Dtos;
-using exam_system.Features.Diplomas.GetDiplomaForEnrollment.Queries;
 using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
 using MediatR;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace exam_system.Features.Diplomas.GetDiplomaForEnrollment.Handlers
+namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 {
     public class CheckIfDiplomaExistsQueryHandler : IRequestHandler<CheckIfDiplomaExistsQueryQuery, RequestResponse<Unit>>
     {
