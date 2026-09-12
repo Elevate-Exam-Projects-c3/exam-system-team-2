@@ -2,6 +2,7 @@
 using exam_system.Features.Diplomas.AdminCreateDiploma.ViewModels;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,8 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 
         #region CRUD Operations
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateDiploma([FromBody] DiplomaViewModel  diplomaViewModel)
         {
