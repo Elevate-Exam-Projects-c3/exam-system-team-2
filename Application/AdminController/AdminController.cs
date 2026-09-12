@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-namespace exam_system.Application
+namespace exam_system.Application.AdminController
 {
     [Controller]
     [Route("[controller]/[action]")]
     [Authorize(Roles = nameof(UserRole.Admin))]
-    public class AdminController : ControllerBase
+    public class AdminController : BaseController
     {
         private readonly IMediator mediator;
 
@@ -19,18 +19,12 @@ namespace exam_system.Application
             this.mediator = mediator;
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> AddQuiz([FromBody] AddQuizCommand command)
         {
             var result = await mediator.Send(command);
-            if (result)
-            {
-                return Ok(new { message = "Quiz added successfully." });
-            }
-            else
-            {
-                return BadRequest(new { message = "Failed to add quiz." });
-            }
-        })
+            
+            return CustomResult(result);
+        }
     }
 }
