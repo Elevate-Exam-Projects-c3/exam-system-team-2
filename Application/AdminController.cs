@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace exam_system.Application
 {
+    [ApiController]
+    [Route("api/[controller]")]
     [Authorize(Roles = nameof(UserRole.Admin))]
     public class AdminController : BaseController
     {
