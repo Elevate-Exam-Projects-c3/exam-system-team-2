@@ -1,8 +1,7 @@
-﻿using exam_system.Domain.Entities.Diplomas;
+using exam_system.Domain.Entities.Diplomas;
 using exam_system.Features.Diplomas.EnrollDiploma.Commands;
 using exam_system.Features.Diplomas.EnrollDiploma.Orchestrators;
 using exam_system.Features.Diplomas.EnrollDiploma.Queries;
-using exam_system.Features.Diplomas.GetDiplomaForEnrollment.Queries;
 using exam_system.Features.Shared;
 using exam_system.Features.Shared.CurrentUser;
 using exam_system.Persistence.DataAccess;
