@@ -524,6 +524,9 @@ namespace exam_system.Migrations
                     b.Property<int>("DurationMinutes")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Instructions")
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
@@ -538,6 +541,12 @@ namespace exam_system.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("PublishedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")

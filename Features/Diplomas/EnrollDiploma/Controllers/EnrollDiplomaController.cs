@@ -1,35 +1,34 @@
-using exam_system.Features.Diplomas.AdminCreateDiploma.Commands;
+﻿using exam_system.Features.Diplomas.AdminCreateDiploma.Commands;
 using exam_system.Features.Diplomas.AdminCreateDiploma.ViewModels;
-using exam_system.Features.Diplomas.AdminDeleteDiploma.Commands;
+using exam_system.Features.Diplomas.EnrollDiploma.Orchestrators;
 using exam_system.Features.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
+namespace exam_system.Features.Diplomas.EnrollDiploma.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class DeleteDiplomaController : ControllerBase
+    public class EnrollDiplomaController : ControllerBase
     {
         #region Fields
         private readonly IMediator _mediator;
         #endregion
 
         #region Constructor
-        public DeleteDiplomaController(IMediator mediator)
+        public EnrollDiplomaController(IMediator mediator)
         {
             _mediator = mediator;
         }
         #endregion
 
         #region CRUD Operations
-
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDiploma([FromRoute] Guid id)
+        [Authorize(Roles = "Student")]
+        [HttpPost("{diplomaId}")]
+        public async Task<IActionResult> EnrollDiploma([FromRoute] Guid diplomaId)
         {
             if (!ModelState.IsValid)
             {
@@ -48,9 +47,9 @@ namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
                     Errors = errors
                 });
             }
-            var requestResponse = await _mediator.Send(
-                new DeleteDiplomaCommand(id));
 
+            var requestResponse = await _mediator.Send(new EnrollDiplomaOrchestrator(diplomaId));
+        
             var endpointResponse = new EndpointResponse
             {
                 Success = requestResponse.Success,
@@ -61,6 +60,11 @@ namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
                 return BadRequest(endpointResponse);
 
             return Ok(endpointResponse);
+
+
+
+
+            return Ok();
         }
         #endregion
     }

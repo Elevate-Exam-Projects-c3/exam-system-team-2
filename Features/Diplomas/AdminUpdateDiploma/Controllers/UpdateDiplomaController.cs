@@ -27,6 +27,8 @@ namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Controllers
         #endregion
 
         #region CRUD Operations
+
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync([FromRoute]Guid id, [FromBody]UpdateDiplomaViewModel diploma)
         {

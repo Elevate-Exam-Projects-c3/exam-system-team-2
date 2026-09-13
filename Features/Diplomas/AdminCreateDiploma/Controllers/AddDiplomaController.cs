@@ -26,6 +26,8 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 
         #region CRUD Operations
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateDiploma([FromBody] DiplomaViewModel  diplomaViewModel)
         {

@@ -3,6 +3,7 @@ using exam_system.Common.Behaviors;
 using exam_system.Domain.Entities.Diplomas;
 using exam_system.Features.Shared;
 using System.Security.Claims;
+using exam_system.Features.Shared.CurrentUser;
 using exam_system.Persistence;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
@@ -41,6 +42,7 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserId, CurrentUserId>();
 
 builder.Services.AddAuthentication(options =>
 {
