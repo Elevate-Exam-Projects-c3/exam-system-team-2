@@ -1,12 +1,14 @@
-﻿using exam_system.Features.Quizzes.AdminPublishQuiz.Commands;
+using exam_system.Features.Quizzes.AdminPublishQuiz.Commands;
 using exam_system.Features.Quizzes.AdminPublishQuiz.Mappings;
 using exam_system.Features.Quizzes.AdminPublishQuiz.ViewModels;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Quizzes.AdminPublishQuiz.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/admin/quizzes")]
     public class AdminPublishQuizController : ControllerBase

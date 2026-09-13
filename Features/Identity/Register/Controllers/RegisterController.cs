@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using exam_system.Features.Identity.Register.Orchestrators;
 using exam_system.Features.Identity.Register.ViewModels;
@@ -6,6 +7,7 @@ using exam_system.Features.Shared;
 
 namespace exam_system.Features.Identity.Register.Controllers;
 
+[AllowAnonymous]
 [ApiController]
 [Route("api/auth")]
 public class RegisterController : ControllerBase

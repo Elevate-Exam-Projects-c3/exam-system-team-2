@@ -2,11 +2,13 @@ using exam_system.Features.Identity.Logout.Orchestrators;
 using exam_system.Features.Identity.Logout.ViewModels;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Identity.Logout.Controllers;
 
+[Authorize(Roles = "Student,Admin")]
 [ApiController]
 [Route("api/auth")]
 public class LogoutController : ControllerBase

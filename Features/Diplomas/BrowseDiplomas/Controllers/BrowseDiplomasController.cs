@@ -1,11 +1,13 @@
-﻿using exam_system.Features.Diplomas.BrowseDiplomas.Queries;
+using exam_system.Features.Diplomas.BrowseDiplomas.Queries;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.BrowseDiplomas.Controllers
 {
+    [Authorize(Roles = "Student,Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class BrowseDiplomasController : ControllerBase

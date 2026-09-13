@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using exam_system.Features.Identity.Login.Orchestrators;
@@ -7,6 +8,7 @@ using exam_system.Features.Shared;
 
 namespace exam_system.Features.Identity.Login.Controllers;
 
+[AllowAnonymous]
 [ApiController]
 [Route("api/auth")]
 [EnableRateLimiting("auth-rate-limit")]
