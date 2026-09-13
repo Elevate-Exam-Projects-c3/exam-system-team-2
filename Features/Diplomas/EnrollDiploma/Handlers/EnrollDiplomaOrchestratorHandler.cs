@@ -5,7 +5,6 @@ using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using exam_system.Features.Shared.CurrentUser;
-using exam_system.Features.Diplomas.GetDiplomaForEnrollment.Queries;
 using exam_system.Features.Diplomas.EnrollDiploma.Queries;
 using exam_system.Features.Diplomas.EnrollDiploma.Commands;
 
