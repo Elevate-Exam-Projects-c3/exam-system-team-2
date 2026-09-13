@@ -39,7 +39,11 @@ public class LoginController : ControllerBase
             return StatusCode(result.StatusCode, errorResponse);
         }
 
-        var responseVm = new LoginResponseViewModel(result.Data!, "Bearer", 900, result.Message);
+        var responseVm = new LoginResponseViewModel(
+            result.Data!.AccessToken,
+            result.Data.TokenType,
+            result.Data.ExpiresIn,
+            result.Message);
         var successResponse = new EndpointResponse<LoginResponseViewModel>(
             true,
             result.StatusCode,
