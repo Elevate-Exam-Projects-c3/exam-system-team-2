@@ -1,9 +1,9 @@
-﻿using exam_system.Features.Shared;
+using exam_system.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Controllers
 {
-    [Route("[controller]/[api]")]
+    [Route("api/[controller]")]
     [Controller]
     public abstract class BaseController : ControllerBase
     {

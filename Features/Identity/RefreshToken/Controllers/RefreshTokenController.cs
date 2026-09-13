@@ -2,12 +2,14 @@ using exam_system.Features.Identity.RefreshToken.Orchestrators;
 using exam_system.Features.Identity.RefreshToken.ViewModels;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
 namespace exam_system.Features.Identity.RefreshToken.Controllers;
 
+[AllowAnonymous]
 [ApiController]
 [Route("api/auth")]
 [EnableRateLimiting("auth-rate-limit")]

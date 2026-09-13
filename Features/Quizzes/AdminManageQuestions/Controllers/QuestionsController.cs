@@ -1,11 +1,13 @@
-﻿using exam_system.Features.Quizzes.AdminManageQuestions.Commands;
+using exam_system.Features.Quizzes.AdminManageQuestions.Commands;
 using exam_system.Features.Quizzes.AdminManageQuestions.Mappings;
 using exam_system.Features.Quizzes.AdminManageQuestions.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Shared
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/admin/questions")]
     public class QuestionsController : ControllerBase
