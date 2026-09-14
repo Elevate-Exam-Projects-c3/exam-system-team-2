@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace exam_system.Features.Identity.RefreshToken.Controllers;
 
+[Tags("Authentication")]
 [AllowAnonymous]
 [ApiController]
 [Route("api/auth")]

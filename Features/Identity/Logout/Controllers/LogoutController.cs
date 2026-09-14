@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Identity.Logout.Controllers;
 
+[Tags("Authentication")]
 [Authorize(Roles = "Student,Admin")]
 [ApiController]
 [Route("api/auth")]
