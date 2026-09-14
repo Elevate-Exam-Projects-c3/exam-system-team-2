@@ -3,5 +3,5 @@ using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Commands
 {
-    public record DeleteQuizOrchestrator(Guid QuizId) : IRequest<ApiResponse<bool>>;
+    public record DeleteQuizOrchestrator(Guid QuizId) : IRequest<RequestResponse<bool>>;
 }
