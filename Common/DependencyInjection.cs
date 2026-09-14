@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace exam_system.Common;
 
@@ -48,6 +50,31 @@ public static class DependencyInjection
                     new List<string>()
                 }
             });
+
+            c.TagActionsBy(api =>
+            {
+                var tags = api.ActionDescriptor.EndpointMetadata.OfType<TagsAttribute>().FirstOrDefault()?.Tags;
+                if (tags is { Count: > 0 })
+                {
+                    return tags.ToList();
+                }
+
+                var relativePath = api.RelativePath ?? string.Empty;
+                if (relativePath.StartsWith("api/auth", StringComparison.OrdinalIgnoreCase))
+                {
+                    return new List<string> { "Authentication" };
+                }
+
+                var controllerName = api.ActionDescriptor.RouteValues["controller"];
+                if (!string.IsNullOrEmpty(controllerName))
+                {
+                    return new List<string> { controllerName };
+                }
+
+                return new List<string> { "Other" };
+            });
+
+            c.DocumentFilter<SwaggerTagOrderDocumentFilter>();
         });
 
         return services;
@@ -126,5 +153,92 @@ public static class DependencyInjection
         });
 
         return services;
+    }
+}
+
+public class SwaggerTagOrderDocumentFilter : IDocumentFilter
+{
+    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+    {
+        var priorityTags = new List<string>
+        {
+            "Authentication",
+            "Diplomas",
+            "Quizzes"
+        };
+
+        var allTagNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        // Include priority tags
+        foreach (var p in priorityTags)
+        {
+            allTagNames.Add(p);
+        }
+
+        // Collect tags from all paths/operations if any
+        if (swaggerDoc.Paths != null)
+        {
+            foreach (var path in swaggerDoc.Paths.Values)
+            {
+                if (path.Operations != null)
+                {
+                    foreach (var operation in path.Operations.Values)
+                    {
+                        if (operation.Tags != null)
+                        {
+                            foreach (var tag in operation.Tags)
+                            {
+                                if (!string.IsNullOrWhiteSpace(tag.Name))
+                                {
+                                    allTagNames.Add(tag.Name);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Also include any existing tags in swaggerDoc.Tags
+        if (swaggerDoc.Tags != null)
+        {
+            foreach (var tag in swaggerDoc.Tags)
+            {
+                if (!string.IsNullOrWhiteSpace(tag.Name))
+                {
+                    allTagNames.Add(tag.Name);
+                }
+            }
+        }
+
+        var comparer = Comparer<OpenApiTag>.Create((t1, t2) =>
+        {
+            if (t1 == null && t2 == null) return 0;
+            if (t1 == null) return -1;
+            if (t2 == null) return 1;
+
+            var idx1 = priorityTags.FindIndex(p => p.Equals(t1.Name, StringComparison.OrdinalIgnoreCase));
+            var idx2 = priorityTags.FindIndex(p => p.Equals(t2.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (idx1 >= 0 && idx2 >= 0) return idx1.CompareTo(idx2);
+            if (idx1 >= 0) return -1;
+            if (idx2 >= 0) return 1;
+
+            return string.Compare(t1.Name, t2.Name, StringComparison.OrdinalIgnoreCase);
+        });
+
+        var sortedTags = new SortedSet<OpenApiTag>(comparer);
+        foreach (var name in allTagNames)
+        {
+            sortedTags.Add(new OpenApiTag
+            {
+                Name = name,
+                Description = name.Equals("Authentication", StringComparison.OrdinalIgnoreCase)
+                    ? "Authentication and account management endpoints"
+                    : null
+            });
+        }
+
+        swaggerDoc.Tags = sortedTags;
     }
 }

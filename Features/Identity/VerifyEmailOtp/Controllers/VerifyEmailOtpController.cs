@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using exam_system.Features.Identity.VerifyEmailOtp.Orchestrators;
 using exam_system.Features.Identity.VerifyEmailOtp.ViewModels;
@@ -7,6 +8,7 @@ using exam_system.Features.Shared;
 
 namespace exam_system.Features.Identity.VerifyEmailOtp.Controllers;
 
+[Tags("Authentication")]
 [AllowAnonymous]
 [ApiController]
 [Route("api/auth")]
