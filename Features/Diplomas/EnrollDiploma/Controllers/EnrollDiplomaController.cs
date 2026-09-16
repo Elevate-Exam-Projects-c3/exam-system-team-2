@@ -60,11 +60,6 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Controllers
                 return BadRequest(endpointResponse);
 
             return Ok(endpointResponse);
-
-
-
-
-            return Ok();
         }
         #endregion
     }
