@@ -6,7 +6,7 @@ using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
 {
-    public record AddQuizCommand(string Title , int DurationMinutes , int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<ApiResponse<Guid>>;
+    public record AddQuizCommand(Guid DiplomaId ,string Title , int DurationMinutes , int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<ApiResponse<Guid>>;
 
     internal class AddQuizCommandValidator : AbstractValidator<AddQuizCommand>
     {
@@ -33,6 +33,7 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
         {
             var quiz = new Quiz
             {
+                DiplomaId = request.DiplomaId,
                 Title = request.Title,
                 DurationMinutes = request.DurationMinutes,
                 PassScore = request.PassScore,

@@ -1,20 +1,21 @@
 ﻿using exam_system.Common.Enums;
+using exam_system.Features.Quizzes;
 using exam_system.Features.Quizzes.AdminCreateQuiz.Mediator;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-namespace exam_system.Application.AdminController
+namespace exam_system.Features.Quizzes.AdminCreateQuiz.Controllers
 {
     [Controller]
     [Route("[controller]/[action]")]
     [Authorize(Roles = nameof(UserRole.Admin))]
-    public class AdminController : BaseController
+    public class AdminCreateController : BaseController
     {
         private readonly IMediator mediator;
 
-        public AdminController(IMediator mediator)
+        public AdminCreateController(IMediator mediator)
         {
             this.mediator = mediator;
         }

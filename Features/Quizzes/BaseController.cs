@@ -1,7 +1,7 @@
 ﻿using exam_system.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 
-namespace exam_system.Application
+namespace exam_system.Features.Quizzes
 {
     [ApiController]
     public class BaseController : ControllerBase
