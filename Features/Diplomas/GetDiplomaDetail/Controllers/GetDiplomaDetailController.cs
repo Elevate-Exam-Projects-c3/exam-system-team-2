@@ -3,6 +3,7 @@ using exam_system.Features.Diplomas.GetDiplomaDetail.Orchestrators;
 using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Controllers
         {
             _mediator = mediator;
         }
-
+        [Authorize(Roles = "Student")]
         [HttpGet("{diplomaId}")]
         public async Task<IActionResult> GetDiplomaDetail(Guid diplomaId)
         {
