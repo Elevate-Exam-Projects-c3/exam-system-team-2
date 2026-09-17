@@ -1,4 +1,4 @@
-﻿using exam_system.Features.Diplomas.AdminCreateDiploma.Commands;
+using exam_system.Features.Diplomas.AdminCreateDiploma.Commands;
 using exam_system.Features.Diplomas.AdminCreateDiploma.ViewModels;
 using exam_system.Features.Shared;
 using MediatR;
@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AddDiplomaController : ControllerBase

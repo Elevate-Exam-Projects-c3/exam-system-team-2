@@ -1,4 +1,4 @@
-﻿using exam_system.Features.Diplomas.EnrollDiploma.Orchestrators;
+using exam_system.Features.Diplomas.EnrollDiploma.Orchestrators;
 using exam_system.Features.Shared;
 using System.Security.Claims;
 

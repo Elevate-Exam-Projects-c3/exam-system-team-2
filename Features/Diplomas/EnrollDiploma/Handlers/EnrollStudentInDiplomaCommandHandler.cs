@@ -1,4 +1,4 @@
-﻿using exam_system.Domain.Entities.Diplomas;
+using exam_system.Domain.Entities.Diplomas;
 using exam_system.Features.Diplomas.EnrollDiploma.Commands;
 using exam_system.Features.Diplomas.EnrollDiploma.Orchestrators;
 using exam_system.Features.Diplomas.EnrollDiploma.Queries;

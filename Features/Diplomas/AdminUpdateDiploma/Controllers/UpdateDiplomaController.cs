@@ -1,4 +1,4 @@
-﻿using exam_system.Features.Diplomas.AdminCreateDiploma.ViewModels;
+using exam_system.Features.Diplomas.AdminCreateDiploma.ViewModels;
 using exam_system.Features.Diplomas.AdminUpdateDiploma.Commands;
 using exam_system.Features.Diplomas.AdminUpdateDiploma.ViewModels;
 using exam_system.Features.Diplomas.BrowseDiplomas;
@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UpdateDiplomaController : ControllerBase
