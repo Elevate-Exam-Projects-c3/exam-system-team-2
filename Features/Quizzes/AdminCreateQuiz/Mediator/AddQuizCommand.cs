@@ -6,11 +6,7 @@ using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
 {
-<<<<<<< HEAD
     public record AddQuizCommand(Guid DiplomaId ,string Title , int DurationMinutes , int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<ApiResponse<Guid>>;
-=======
-    public record AddQuizCommand(string Title , int DurationMinutes , int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<Result<int>>;
->>>>>>> master
 
     internal class AddQuizCommandValidator : AbstractValidator<AddQuizCommand>
     {
@@ -24,11 +20,7 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
         }
     }
 
-<<<<<<< HEAD
     internal class AddQuizCommandHandler : IRequestHandler<AddQuizCommand , ApiResponse<Guid>>
-=======
-    internal class AddQuizCommandHandler : IRequestHandler<AddQuizCommand , Result<int>>
->>>>>>> master
     {
         public AddQuizCommandHandler(IGenericRepository<Quiz> quizRepository, IUnitOfWork unitOfWork)
         {
@@ -37,17 +29,7 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
         }
         private readonly IGenericRepository<Quiz> _quizRepository ;
         private readonly IUnitOfWork _unitOfWork ;
-<<<<<<< HEAD
         public async Task<ApiResponse<Guid>> Handle(AddQuizCommand request, CancellationToken cancellationToken)
-=======
-
-        public AddQuizCommandHandler(IGenericRepository<Quiz> quizRepository, IUnitOfWork unitOfWork)
-        {
-            _quizRepository = quizRepository;
-            _unitOfWork = unitOfWork;
-        }
-        public async Task<Result<int>> Handle(AddQuizCommand request, CancellationToken cancellationToken)
->>>>>>> master
         {
             var quiz = new Quiz
             {
@@ -62,7 +44,6 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
             
             _quizRepository.Add(quiz);
 
-<<<<<<< HEAD
             int result = await _unitOfWork.SaveChangesAsync(cancellationToken);
             if(result > 0)
             {
@@ -73,14 +54,6 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
                 return ApiResponse<Guid>.Fail("Failed to create quiz.");
             }
 
-=======
-            var addedRowAffected = await _unitOfWork.SaveChangesAsync(cancellationToken);
-            if(addedRowAffected > 0)
-            {
-                return Result<int>.Success(addedRowAffected);
-            }
-            return Result<int>.Failure("Failed to add quiz.");
->>>>>>> master
         }
     }
 }
