@@ -19,8 +19,8 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
         }
         public async Task<RequestResponse<ViewDiplomaDetailsDto>> Handle(GetDiplomaDetailOrchestrator request, CancellationToken cancellationToken)
         {
-            //var studentId = _currentUserId.GetStudentId();
-            var studentId = Guid.Parse("45D11C22-72EE-497D-B5EF-1E1D51D8DC0D");
+            var studentId = _currentUserId.GetStudentId();
+            //var studentId = Guid.Parse("45D11C22-72EE-497D-B5EF-1E1D51D8DC0D");
             if (studentId == null)
                 return RequestResponse<ViewDiplomaDetailsDto>
                     .Fail("Unauthorized.", 401);
@@ -50,7 +50,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
                 .ToList();
             
             var attemptQuery = await _mediator.Send(
-                new GetStudentAttemptsQuery(studentId, quizIds),
+                new GetStudentAttemptsQuery(studentId.Value, quizIds),
                 cancellationToken);
 
             if (!attemptQuery.Success || attemptQuery.Data == null)
