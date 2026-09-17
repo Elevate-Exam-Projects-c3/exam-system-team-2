@@ -27,3 +27,8 @@ public enum AttemptStatus
     Submitted = 2,
     TimedOut = 3
 }
+public enum AttemptSortOrder
+{
+    Ascending,
+    Descending
+}
