@@ -1,25 +1,31 @@
 using System.Reflection;
-using FluentValidation;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+using exam_system.Common;
+using exam_system.Common.Behaviors;
 using exam_system.Domain.Entities.Diplomas;
+using exam_system.Features.Shared.CurrentUser;
 using exam_system.Persistence;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
+using FluentValidation;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserId, CurrentUserId>();
+
+builder.Services.AddSwaggerDocumentation();
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddAuthRateLimiter();
 
 builder.Services.AddPersistenceServices(builder.Configuration);
+builder.Services.AddCommonServices();
 
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-});
-
+builder.Services.AddMediatR(typeof(Program).Assembly);
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
@@ -53,6 +59,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRateLimiter();
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Test Minimal API Endpoint to verify database access and generic repository

@@ -19,6 +19,12 @@ public class EndpointResponse<T> : ApiResponse<T>
             result.Errors
         );
     }
+
+    public static new EndpointResponse<T> Fail(string message, int statusCode = 400, IDictionary<string, string[]>? errors = null)
+        => new(false, statusCode, message, default, errors);
+
+    public static new EndpointResponse<T> Ok(T data, string message = "Success", int statusCode = 200)
+        => new(true, statusCode, message, data);
 }
 
 public class EndpointResponse : ApiResponse

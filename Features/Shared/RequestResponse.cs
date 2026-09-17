@@ -41,6 +41,19 @@ public class RequestResponse<T>
             Errors = errors
         };
     }
+
+    // Overloaded Fail method to include data :
+    public static RequestResponse<T> Fail(string message, T data, int statusCode = 400, IDictionary<string, string[]>? errors = null)
+    {
+        return new RequestResponse<T>
+        {
+            Success = false,
+            StatusCode = statusCode,
+            Message = message,
+            Data = data,
+            Errors = errors
+        };
+    }
 }
 
 public class RequestResponse : RequestResponse<object>
