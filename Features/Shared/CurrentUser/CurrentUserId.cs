@@ -18,5 +18,14 @@ namespace exam_system.Features.Shared.CurrentUser
             }
             return null;
         }
+        public Guid? GetStudentId()
+        {
+            var studentIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("StudentId");
+            if (studentIdClaim != null && Guid.TryParse(studentIdClaim.Value, out var studentId))
+            {
+                return studentId;
+            }
+            return null;
+        }
     }
 }
