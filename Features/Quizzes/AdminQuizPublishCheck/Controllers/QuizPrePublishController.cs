@@ -40,5 +40,7 @@ namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Controllers
 
             return StatusCode(result.StatusCode, response);
         }
+
+        
     }
 }

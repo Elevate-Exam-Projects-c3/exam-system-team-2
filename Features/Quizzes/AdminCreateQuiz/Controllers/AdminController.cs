@@ -8,9 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace exam_system.Features.Quizzes.AdminCreateQuiz.Controllers
 {
+    [Tags("Quizzes")]
     [Controller]
     [Route("[controller]/[action]")]
-    [Authorize(Roles = nameof(UserRole.Admin))]
+   // [Authorize(Roles = "Admin")]
     public class AdminCreateController : BaseController
     {
         private readonly IMediator mediator;
