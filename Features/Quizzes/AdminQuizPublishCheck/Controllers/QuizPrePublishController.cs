@@ -41,19 +41,7 @@ namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Controllers
             return StatusCode(result.StatusCode, response);
         }
 
-        //[HttpGet("chickpublish")]
-        //public async Task<ActionResult<EndpointResponse<bool>>> CheckQuizIsPublished(Guid id)
-        //{
-        //    var result = await _mediator.Send(new GetChickQuizIsPublishQuery(id));
-        //    var response = new EndpointResponse<bool>(
-        //        result.Success,
-        //        result.StatusCode,
-        //        result.Message,
-        //        result.Data,
-        //        result.Errors
-        //    );
-        //    return StatusCode(result.StatusCode, response);
-        //}
+        
 
     }
 }

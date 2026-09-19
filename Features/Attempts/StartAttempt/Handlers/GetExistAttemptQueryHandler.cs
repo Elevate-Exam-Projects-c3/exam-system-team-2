@@ -8,28 +8,30 @@ using MediatR;
 
 namespace exam_system.Features.Attempts.StartAttempt.Handlers
 {
-    public class GetExistAttemptQueryHandler : IRequestHandler<GetExistAttemptQuery, RequestResponse<AttemptStatusDto>>
+    public class GetExistStudentAttemptQueryHandler : IRequestHandler<GetExistStudentAttemptQuery, RequestResponse<AttemptStatusDto>>
     {
         private readonly IGenericRepository<QuizAttempt> _quizAttemptRepository;
 
-        public GetExistAttemptQueryHandler(IGenericRepository<QuizAttempt> quizAttemptRepository)
+        public GetExistStudentAttemptQueryHandler(IGenericRepository<QuizAttempt> quizAttemptRepository)
         {
             _quizAttemptRepository = quizAttemptRepository;
         }
-        public async Task<RequestResponse<AttemptStatusDto>> Handle(GetExistAttemptQuery request, CancellationToken cancellationToken)
+        public async Task<RequestResponse<AttemptStatusDto>> Handle(GetExistStudentAttemptQuery request, CancellationToken cancellationToken)
         {
-            var attempt = _quizAttemptRepository.Get(a => a.StudentId == request.StudentId && a.QuizId == request.QuizId).Select(a=> new AttemptStatusDto
-            {
-                AttemptId = a.Id,
-                Status = a.Status
-            }).FirstOrDefault();
+            var attempt = _quizAttemptRepository.Get(a => a.StudentId == request.StudentId && a.QuizId == request.QuizId).
+                                                 Select(a => new AttemptStatusDto
+                                                 {
+                                                     AttemptId = a.Id,
+                                                     StudentId = a.StudentId,
+                                                     Status = a.Status
+                                                 }).FirstOrDefault();
 
             if(attempt is not null)
             {
                 return RequestResponse<AttemptStatusDto>.Ok(attempt, "Existing attempt found");
             }
 
-            return RequestResponse<AttemptStatusDto>.Fail("No existing attempt found", 404);
+            return RequestResponse<AttemptStatusDto>.Fail("No existing attempt found");
         }
     }
 }
