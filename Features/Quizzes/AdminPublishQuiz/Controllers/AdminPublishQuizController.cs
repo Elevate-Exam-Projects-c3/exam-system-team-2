@@ -1,5 +1,6 @@
 using exam_system.Features.Quizzes.AdminPublishQuiz.Commands;
 using exam_system.Features.Quizzes.AdminPublishQuiz.Mappings;
+using exam_system.Features.Quizzes.AdminPublishQuiz.Orchestrators;
 using exam_system.Features.Quizzes.AdminPublishQuiz.ViewModels;
 using exam_system.Features.Shared;
 using MediatR;
@@ -21,9 +22,9 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Controllers
         }
 
         [HttpPatch("{quizId:guid}/publish")]
-        public async Task<ActionResult<EndpointResponse<PublishQuizResultViewModel>>> Publish(Guid quizId)
+        public async Task<ActionResult<EndpointResponse<PublishQuizResultViewModel>>> Publish(Guid quizId , CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new PublishQuizCommand(quizId));
+            var result = await _mediator.Send(new PublishQuizOrchestrator(quizId), cancellationToken);
 
             var viewModelResult = result.MapTo(r => r.ToViewModel());
 

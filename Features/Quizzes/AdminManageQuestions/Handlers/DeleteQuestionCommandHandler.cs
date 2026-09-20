@@ -39,7 +39,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
 
             //4. Soft Delete the Question :
             await _questionRepository.DeleteAsync(question);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return RequestResponse.Ok("Question deleted successfully.");
         }
     }
