@@ -21,8 +21,9 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
         {
 
             // 1. Calculate OrderIndex
-            var orderIndex = await _questionRepository
-                .CountAsync(q => q.QuizId == request.QuizId);
+            var maxOrder = await _questionRepository
+              .Get(q => q.QuizId == request.QuizId)
+              .MaxAsync(q => (int?)q.OrderIndex,cancellationToken) ?? 0;
 
             // 2. Create Question
             var question = new Question
@@ -30,7 +31,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
                 QuizId = request.QuizId,
                 Text = request.Text,
                 Explanation = request.Explanation,
-                OrderIndex = orderIndex + 1
+                OrderIndex = maxOrder + 1
             };
 
             // 3. Add Question

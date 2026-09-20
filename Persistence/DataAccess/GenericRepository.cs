@@ -84,14 +84,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         }
     }
 
-    public async Task<int> CountAsync(Expression<Func<T, bool>>? criteria = null)
+    public async Task<int> CountAsync(
+     Expression<Func<T, bool>>? criteria = null,
+     CancellationToken cancellationToken = default)
     {
-        if (criteria == null)
-        {
-            return await _dbSet.CountAsync();
-        }
-
-        return await _dbSet.CountAsync(criteria);
+        return criteria is null
+            ? await _dbSet.CountAsync(cancellationToken)
+            : await _dbSet.CountAsync(criteria, cancellationToken);
     }
 
     public Task UpdateAsync(T entity)
