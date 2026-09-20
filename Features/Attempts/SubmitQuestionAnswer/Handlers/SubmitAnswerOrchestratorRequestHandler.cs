@@ -46,7 +46,24 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
                 return RequestResponse.Fail("Attempt is no longer in progress.", 400);
             }
 
-            //4. Get the question is a part of the quiz :
+            // TEMPORARY: Placeholder auto-timeout logic for EXAM-132.
+            // This will be replaced by the shared Auto-Submit logic from EXAM-135
+            // once EXAM-135 is completed.
+            if (DateTime.UtcNow > attempt.Deadline)
+            {
+                var timeoutResult = await _mediator.Send(new AutoTimeoutAttemptCommand(request.AttemptId),cancellationToken);
+                if (!timeoutResult.Success)
+                {
+                    return timeoutResult;
+                }
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+                return RequestResponse.Fail("The attempt time has expired. The attempt has been auto-submitted.",410);
+            }
+
+
+
+            //5. Get the question is a part of the quiz :
             var questionResult = await _mediator.Send( new ValidateQuestionForAttemptQuery( request.QuestionId,attempt.QuizId),cancellationToken);
 
             if (!questionResult.Success)
@@ -63,7 +80,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
                 return RequestResponse.Fail("Question does not belong to the attempt's quiz.",400);
             }
 
-            //5. Save / update the answer
+            //6. Save / update the answer
             var answerResult = await _mediator.Send(
                 new SubmitAnswerCommand(
                     request.AttemptId,
@@ -76,7 +93,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
                 return answerResult;
             }
 
-            //6. Save changes
+            //7. Save changes
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return RequestResponse.Ok("Answer saved successfully.");
