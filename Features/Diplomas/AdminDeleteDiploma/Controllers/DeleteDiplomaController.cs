@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
 {
-    [Tags(tags:"Diplomas")]
+    [Tags(tags: "Diplomas")]
     //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
@@ -24,10 +24,10 @@ namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
 
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDiploma([FromRoute] Guid id,CancellationToken cancellationToken = default)
+        public async Task<IActionResult> DeleteDiploma([FromRoute] Guid id, CancellationToken cancellationToken = default)
         {
             var requestResponse = await _mediator.Send(
-                new DeleteDiplomaCommand(id),cancellationToken);
+                new DeleteDiplomaCommand(id), cancellationToken);
 
             var endpointResponse = new EndpointResponse
             {

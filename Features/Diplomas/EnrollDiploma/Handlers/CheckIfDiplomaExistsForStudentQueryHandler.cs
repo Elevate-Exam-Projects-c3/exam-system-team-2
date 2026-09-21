@@ -22,8 +22,8 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
         }
 
         public async Task<RequestResponse<Unit>> Handle(CheckIfDiplomaExistsQueryQuery request, CancellationToken cancellationToken)
-        {            
-            var diplomaExists = await  _diplomaRepository.GetAll()
+        {
+            var diplomaExists = await _diplomaRepository.GetAll()
                 .Where(d => d.Id == request.DiplomaId)
                 .Where(d => d.Quizzes.Any(q => q.Status == QuizStatus.Published))
                 .AnyAsync(cancellationToken);

@@ -23,13 +23,13 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateDiploma([FromBody] DiplomaViewModel  diplomaViewModel, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> CreateDiploma([FromBody] DiplomaViewModel diplomaViewModel, CancellationToken cancellationToken = default)
         {
             var requestResponse = await _mediator.Send(
                 new AddDiplomaCommand(
-                    diplomaViewModel.Title, 
-                    diplomaViewModel.Description, 
-                    diplomaViewModel.ImageUrl),cancellationToken);
+                    diplomaViewModel.Title,
+                    diplomaViewModel.Description,
+                    diplomaViewModel.ImageUrl), cancellationToken);
 
             var endpointResponse = new EndpointResponse
             {
@@ -37,7 +37,7 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
                 Message = requestResponse.Message,
                 Data = requestResponse.Data
             };
-            if(!endpointResponse.Success)
+            if (!endpointResponse.Success)
                 return BadRequest(endpointResponse);
 
             return StatusCode(StatusCodes.Status201Created, requestResponse);

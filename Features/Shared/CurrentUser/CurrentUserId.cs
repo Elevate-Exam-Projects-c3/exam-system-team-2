@@ -2,7 +2,7 @@
 
 namespace exam_system.Features.Shared.CurrentUser
 {
-    public class CurrentUserId:ICurrentUserId
+    public class CurrentUserId : ICurrentUserId
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         public CurrentUserId(IHttpContextAccessor httpContextAccessor)
@@ -12,7 +12,7 @@ namespace exam_system.Features.Shared.CurrentUser
         public Guid? GetUserId()
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if(Guid.TryParse(userId, out var id))
+            if (Guid.TryParse(userId, out var id))
             {
                 return id;
             }

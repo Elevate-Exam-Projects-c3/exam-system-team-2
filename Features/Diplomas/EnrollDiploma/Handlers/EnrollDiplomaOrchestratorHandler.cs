@@ -11,7 +11,7 @@ using exam_system.Features.Diplomas.EnrollDiploma.Commands;
 
 namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 {
-    public class EnrollDiplomaOrchestratorHandler:IRequestHandler<EnrollDiplomaOrchestrator,RequestResponse<Unit>>
+    public class EnrollDiplomaOrchestratorHandler : IRequestHandler<EnrollDiplomaOrchestrator, RequestResponse<Unit>>
     {
         private readonly IMediator _mediator;
         private readonly ICurrentUserId _currentUserId;
@@ -36,7 +36,7 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 
             if (isEnrolled.Success)
                 return RequestResponse<Unit>.Fail(isEnrolled.Message, isEnrolled.StatusCode);
-           
+
             var enrollResponse = await _mediator.Send(new EnrollStudentInDiplomaCommand(studentId.Value, request.DiplomaId), cancellationToken);
 
             if (!enrollResponse.Success)

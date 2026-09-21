@@ -25,9 +25,9 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Controllers
 
         //[Authorize(Roles = "Student")]
         [HttpPost("{diplomaId}")]
-        public async Task<IActionResult> EnrollDiploma([FromRoute] Guid diplomaId,CancellationToken cancellationToken = default)
+        public async Task<IActionResult> EnrollDiploma([FromRoute] Guid diplomaId, CancellationToken cancellationToken = default)
         {
-            var requestResponse = await _mediator.Send(new EnrollDiplomaOrchestrator(diplomaId),cancellationToken);
+            var requestResponse = await _mediator.Send(new EnrollDiplomaOrchestrator(diplomaId), cancellationToken);
 
             var endpointResponse = new EndpointResponse
             {

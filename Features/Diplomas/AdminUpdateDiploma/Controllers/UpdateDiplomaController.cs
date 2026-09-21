@@ -25,9 +25,9 @@ namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute]Guid id, [FromBody]UpdateDiplomaViewModel diploma,CancellationToken cancellationToken = default)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateDiplomaViewModel diploma, CancellationToken cancellationToken = default)
         {
-            var requestResponse = await _mediator.Send(new UpdateDiplomaCommand(id, diploma.Title, diploma.Description, diploma.ImageUrl),cancellationToken);
+            var requestResponse = await _mediator.Send(new UpdateDiplomaCommand(id, diploma.Title, diploma.Description, diploma.ImageUrl), cancellationToken);
 
             var endpointResponse = new EndpointResponse
             {

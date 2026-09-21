@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.BrowseDiplomas.Handlers
 {
-    public class GetAllDiplomasQueryHandler:IRequestHandler<GetAllDiplomasQuery,RequestResponse<PaginatedResult<DiplomaDto>>>
+    public class GetAllDiplomasQueryHandler : IRequestHandler<GetAllDiplomasQuery, RequestResponse<PaginatedResult<DiplomaDto>>>
     {
         private readonly IGenericRepository<Diploma> _diplomaRepo;
 
@@ -25,28 +25,28 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Handlers
                 .CountAsync(d => d.Quizzes.Any(q => q.Status == QuizStatus.Published),
                 cancellationToken);
 
-            var diplomas = _diplomaRepo.GetAll() 
-                .Where(d => d.Quizzes.Any(q=>q.Status==QuizStatus.Published))
+            var diplomas = _diplomaRepo.GetAll()
+                .Where(d => d.Quizzes.Any(q => q.Status == QuizStatus.Published))
                 .AsNoTracking()
-                .OrderBy(d=>d.Title).ThenBy(d=>d.Id)
+                .OrderBy(d => d.Title).ThenBy(d => d.Id)
                 .Skip(skip)
                 .Take(request.PageSize);
-            
-            
+
+
             var diplomaDtos = await diplomas
                 .Select(d => new DiplomaDto
                 {
                     Id = d.Id,
                     Title = d.Title,
                     Description = d.Description,
-                    CountOfQuizzes = d.Quizzes.Count(q => q.Status == QuizStatus.Published) 
+                    CountOfQuizzes = d.Quizzes.Count(q => q.Status == QuizStatus.Published)
                 }).ToListAsync(cancellationToken);
             //untill now not handle student's own progress => 2/5
-            
+
             var paginatedResult = PaginatedResult<DiplomaDto>.Create(
-                diplomaDtos, 
-                totalCount, 
-                request.PageNumber, 
+                diplomaDtos,
+                totalCount,
+                request.PageNumber,
                 request.PageSize
             );
 

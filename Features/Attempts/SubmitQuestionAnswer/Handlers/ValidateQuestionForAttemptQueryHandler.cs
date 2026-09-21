@@ -21,7 +21,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
         {
 
             var exists = await _questionRepository
-                   .Get(q =>q.Id == request.QuestionId &&q.QuizId == request.QuizId)
+                   .Get(q => q.Id == request.QuestionId && q.QuizId == request.QuizId)
                    .AnyAsync(cancellationToken);
 
             var result = new ValidateQuestionForAttemptDto

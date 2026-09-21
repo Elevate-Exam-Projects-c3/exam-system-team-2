@@ -30,7 +30,7 @@ namespace exam_system.Features.Attempts.GetAttemptMonitoring.Controllers
 
             var viewModelResult = result.MapTo(dto => dto.ToViewModel());
 
-            return StatusCode(viewModelResult.StatusCode , EndpointResponse<AttemptDetailForAdminViewModel>.FromResult(viewModelResult));
+            return StatusCode(viewModelResult.StatusCode, EndpointResponse<AttemptDetailForAdminViewModel>.FromResult(viewModelResult));
         }
 
         //2. Get Attempts Monitoring List for Admin : 
@@ -43,11 +43,11 @@ namespace exam_system.Features.Attempts.GetAttemptMonitoring.Controllers
             [FromQuery] int pageIndex = 1,
             [FromQuery] int pageSize = 10)
         {
-            var result = await _mediator.Send(new GetAttemptsQuery( quizId, studentId,status,sortOrder,pageIndex,pageSize));
+            var result = await _mediator.Send(new GetAttemptsQuery(quizId, studentId, status, sortOrder, pageIndex, pageSize));
 
             var viewModelResult = result.MapTo(dto => dto.ToViewModel());
 
-            return StatusCode( viewModelResult.StatusCode,EndpointResponse<PaginatedResult<AttemptSummaryViewModel>>.FromResult(viewModelResult));
+            return StatusCode(viewModelResult.StatusCode, EndpointResponse<PaginatedResult<AttemptSummaryViewModel>>.FromResult(viewModelResult));
         }
     }
 }

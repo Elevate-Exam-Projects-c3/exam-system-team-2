@@ -21,15 +21,15 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDiplomas([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10,CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetAllDiplomas([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var requestResponse = await _mediator.Send(new GetAllDiplomasQuery(pageNumber, pageSize),cancellationToken);
+            var requestResponse = await _mediator.Send(new GetAllDiplomasQuery(pageNumber, pageSize), cancellationToken);
 
             var endpointResponse = new EndpointResponse<PaginatedResult<DiplomaDto>>
             {
                 Success = requestResponse.Success,
                 Message = requestResponse.Message,
-                Data= requestResponse.Data
+                Data = requestResponse.Data
             };
             if (!endpointResponse.Success)
                 return BadRequest(endpointResponse);

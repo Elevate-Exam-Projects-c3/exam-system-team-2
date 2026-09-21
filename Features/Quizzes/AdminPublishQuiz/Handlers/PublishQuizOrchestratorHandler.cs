@@ -19,7 +19,7 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
             CancellationToken cancellationToken)
         {
             // 1. Check if the quiz is ready to be published
-            var readinessResult = await _mediator.Send(new GetQuizPublishReadinessQuery(request.QuizId),cancellationToken);
+            var readinessResult = await _mediator.Send(new GetQuizPublishReadinessQuery(request.QuizId), cancellationToken);
 
             // 2. If the readiness check failed or quiz was not found
             if (!readinessResult.Success || readinessResult.Data == null)
@@ -38,11 +38,11 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
             if (!result.IsReadyToPublish)
             {
                 return RequestResponse<PublishQuizResult>.Fail(
-                    "Quiz is not ready to be published. Please fix the failing checks.", result,400);
+                    "Quiz is not ready to be published. Please fix the failing checks.", result, 400);
             }
 
             // 5. Publish the quiz
-            var publishResult = await _mediator.Send(new PublishQuizCommand(request.QuizId),cancellationToken);
+            var publishResult = await _mediator.Send(new PublishQuizCommand(request.QuizId), cancellationToken);
 
             // 6. If publishing failed
             if (!publishResult.Success)
@@ -53,7 +53,7 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
             }
 
             // 7. Return successful result
-            return RequestResponse<PublishQuizResult>.Ok(result,"Quiz published successfully.",200);
+            return RequestResponse<PublishQuizResult>.Ok(result, "Quiz published successfully.", 200);
         }
     }
 }

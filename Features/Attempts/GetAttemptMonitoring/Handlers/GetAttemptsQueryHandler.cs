@@ -23,15 +23,15 @@ namespace exam_system.Features.Attempts.GetAttemptMonitoring.Handlers
             //1. Validation of Pagination :
             if (request.PageIndex < 1)
             {
-                return RequestResponse<PaginatedResult<AttemptSummaryDto>>.Fail("PageIndex must be greater than or equal to 1",statusCode: 400);
+                return RequestResponse<PaginatedResult<AttemptSummaryDto>>.Fail("PageIndex must be greater than or equal to 1", statusCode: 400);
             }
 
             if (request.PageSize <= 0)
             {
-                return RequestResponse<PaginatedResult<AttemptSummaryDto>>.Fail("PageSize must be greater than 0",statusCode: 400);
+                return RequestResponse<PaginatedResult<AttemptSummaryDto>>.Fail("PageSize must be greater than 0", statusCode: 400);
             }
 
-            var query =  _attemptRepository.Get(a=> !a.IsDeleted);
+            var query = _attemptRepository.Get(a => !a.IsDeleted);
 
             //2. Filtering :
             if (request.QuizId.HasValue)
@@ -80,9 +80,9 @@ namespace exam_system.Features.Attempts.GetAttemptMonitoring.Handlers
                   }).ToListAsync(cancellationToken);
 
             // 5. Create PaginatedResult :
-            var paginatedResult = PaginatedResult<AttemptSummaryDto>.Create( attempts,totalCount, request.PageIndex, request.PageSize);
+            var paginatedResult = PaginatedResult<AttemptSummaryDto>.Create(attempts, totalCount, request.PageIndex, request.PageSize);
 
-            return RequestResponse<PaginatedResult<AttemptSummaryDto>>.Ok(paginatedResult,"Attempts retrieved successfully.");
+            return RequestResponse<PaginatedResult<AttemptSummaryDto>>.Ok(paginatedResult, "Attempts retrieved successfully.");
 
         }
     }

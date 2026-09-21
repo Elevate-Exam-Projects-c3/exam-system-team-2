@@ -21,7 +21,7 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<RequestResponse> Handle(PublishQuizCommand request,CancellationToken cancellationToken)
+        public async Task<RequestResponse> Handle(PublishQuizCommand request, CancellationToken cancellationToken)
         {
             var quiz = await _quizRepository.GetByIdAsync(request.QuizId);
 
@@ -37,7 +37,7 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return RequestResponse.Ok("Quiz published successfully.",200);
+            return RequestResponse.Ok("Quiz published successfully.", 200);
         }
     }
 }

@@ -89,7 +89,7 @@ namespace exam_system.Features.Attempts.GetAttemptResults.Handlers
                     SelectedOptionText = q.Answer?.SelectedOptionText,
                     IsCorrect = q.Answer?.IsCorrect ?? false,
                     CorrectOptionText = q.CorrectOptionText
-                }) .ToList();
+                }).ToList();
 
             // 7. Create the final DTO :
             var dto = new AttemptResultsDto
@@ -99,12 +99,12 @@ namespace exam_system.Features.Attempts.GetAttemptResults.Handlers
                 Questions = questionResults
             };
             // 8. Return the results :
-            return RequestResponse<AttemptResultsDto>.Ok(dto,"Attempt results retrieved successfully.");
+            return RequestResponse<AttemptResultsDto>.Ok(dto, "Attempt results retrieved successfully.");
 
         }
-    
-    
+
+
     }
-   
+
 }
 

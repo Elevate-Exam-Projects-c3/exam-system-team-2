@@ -13,7 +13,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
         private readonly IGenericRepository<Question> _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteQuestionCommandHandler(IGenericRepository<Question> questionRepository , IUnitOfWork unitOfWork)
+        public DeleteQuestionCommandHandler(IGenericRepository<Question> questionRepository, IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _unitOfWork = unitOfWork;
@@ -31,7 +31,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
             }
 
             //3. Delete Guard : 
-            if(question.Quiz.Status == QuizStatus.Published)
+            if (question.Quiz.Status == QuizStatus.Published)
             {
                 throw new InvalidOperationException(
                     "Cannot delete a question from a published quiz.");

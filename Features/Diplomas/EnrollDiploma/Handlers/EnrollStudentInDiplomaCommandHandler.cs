@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 {
-    public class EnrollStudentInDiplomaCommandHandler:IRequestHandler<EnrollStudentInDiplomaCommand, RequestResponse<Unit>>
+    public class EnrollStudentInDiplomaCommandHandler : IRequestHandler<EnrollStudentInDiplomaCommand, RequestResponse<Unit>>
     {
 
         private readonly IGenericRepository<StudentEnrollment> _enrollmentRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMediator _mediator;
 
-        public EnrollStudentInDiplomaCommandHandler(IGenericRepository<StudentEnrollment> enrollmentRepo, IUnitOfWork unitOfWork,IMediator mediator)
+        public EnrollStudentInDiplomaCommandHandler(IGenericRepository<StudentEnrollment> enrollmentRepo, IUnitOfWork unitOfWork, IMediator mediator)
         {
             _enrollmentRepo = enrollmentRepo;
             _unitOfWork = unitOfWork;
@@ -26,14 +26,14 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 
         public async Task<RequestResponse<Unit>> Handle(EnrollStudentInDiplomaCommand request, CancellationToken cancellationToken)
         {
-            
+
             var existingEnrollment = await _mediator.Send(new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(request.StudentId, request.DiplomaId));
-            
+
             if (existingEnrollment.Success)
                 return RequestResponse<Unit>.Fail("User is already enrolled in the diploma.");
 
-            var enrollment = new StudentEnrollment 
-            { 
+            var enrollment = new StudentEnrollment
+            {
                 StudentId = request.StudentId,
                 DiplomaId = request.DiplomaId,
             };

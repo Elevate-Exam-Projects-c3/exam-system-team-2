@@ -61,7 +61,7 @@ namespace exam_system.Features.Attempts.GetAttemptMonitoring.Handlers
             //3. Check if attempt exists
             if (attempt == null)
             {
-                return RequestResponse<AttemptDetailForAdminDto>.Fail( $"Attempt with ID {request.AttemptId} was not found.",statusCode: 404);
+                return RequestResponse<AttemptDetailForAdminDto>.Fail($"Attempt with ID {request.AttemptId} was not found.", statusCode: 404);
             }
 
             //4. Map data to DTO
@@ -81,7 +81,7 @@ namespace exam_system.Features.Attempts.GetAttemptMonitoring.Handlers
                    }).ToList()
             };
 
-            return RequestResponse<AttemptDetailForAdminDto>.Ok( dto,"Attempt details retrieved successfully.");
-        } 
+            return RequestResponse<AttemptDetailForAdminDto>.Ok(dto, "Attempt details retrieved successfully.");
+        }
     }
 }

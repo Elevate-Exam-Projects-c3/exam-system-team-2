@@ -4,5 +4,5 @@ using MediatR;
 
 namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Queries
 {
-    public record ValidateQuestionForAttemptQuery(Guid QuestionId,Guid QuizId) : IRequest<RequestResponse<ValidateQuestionForAttemptDto>>;
+    public record ValidateQuestionForAttemptQuery(Guid QuestionId, Guid QuizId) : IRequest<RequestResponse<ValidateQuestionForAttemptDto>>;
 }
