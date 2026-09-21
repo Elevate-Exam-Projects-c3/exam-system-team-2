@@ -42,7 +42,7 @@ namespace exam_system.Features.Quizzes.AdminUnpublishQuiz.Handlers
             //4. Unpublish the quiz:
             quiz.Status = QuizStatus.Draft;
             _quizRepository.Update(quiz);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return RequestResponse.Ok("Quiz has been unpublished successfully.");
         }

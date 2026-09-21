@@ -1,5 +1,8 @@
-﻿using exam_system.Domain.Entities.Diplomas;
+﻿using exam_system.Common.Enums;
+using exam_system.Domain.Entities.Diplomas;
+using exam_system.Domain.Entities.Quizzes;
 using exam_system.Features.Diplomas.BrowseDiplomas;
+using exam_system.Features.Diplomas.GetDiplomaDetail.Dtos;
 using exam_system.Features.Diplomas.GetDiplomaDetail.Queries;
 using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
@@ -8,41 +11,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
 {
-    public class GetDiplomaDetailQueryHandler:IRequestHandler<GetDiplomaDetailByIdQuery, RequestResponse<DiplomaDto?>>
+    public class GetDiplomaDetailQueryHandler:IRequestHandler<GetDiplomaDetailByIdQuery, RequestResponse<DiplomaDetailDto?>>
     {
-        #region Fields
         private readonly IGenericRepository<Diploma> _diplomaRepo;
-        #endregion
-        #region Constructor 
         public GetDiplomaDetailQueryHandler(IGenericRepository<Diploma> diplomaRepo)
         {
             _diplomaRepo = diplomaRepo;
         }
-        #endregion
-        #region Handle Method
-        public async Task<RequestResponse<DiplomaDto?>> Handle(GetDiplomaDetailByIdQuery request, CancellationToken cancellationToken)
-        { 
-            var exsitingDiploma = await _diplomaRepo.GetByIdAsync(request.Id);
-   
-            if(exsitingDiploma == null)
-                return RequestResponse<DiplomaDto?>.Fail(
-                    $"Diploma with Id = {request.Id} not found.");
-            
+        public async Task<RequestResponse<DiplomaDetailDto?>> Handle(GetDiplomaDetailByIdQuery request, CancellationToken cancellationToken)
+        {
+            var exsitingDiploma = await _diplomaRepo.GetAll()
+                .Where(d => d.Id == request.DiplomaId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(cancellationToken);
 
-            DiplomaDto diplomaDto = new DiplomaDto()
+            if (exsitingDiploma == null)
+                return RequestResponse<DiplomaDetailDto?>
+                    .Fail($"Diploma with Id = {request.DiplomaId} not found.", 404);
+            
+            var diplomaDto = new DiplomaDetailDto()
             {
-                //Id = exsitingDiploma.Id,
+                Id = exsitingDiploma.Id,
+                Title = exsitingDiploma.Title,
                 Description = exsitingDiploma.Description,
                 ImageUrl = exsitingDiploma.ImageUrl,
-                //CreatedAt = exsitingDiploma.CreatedAt,
-                //UpdatedAt = exsitingDiploma.UpdatedAt,
-                //IsDeleted = exsitingDiploma.IsDeleted,
-                //DeletedAt = exsitingDiploma.DeletedAt
             };
 
-            return RequestResponse<DiplomaDto?>.Ok(diplomaDto, 
+            return RequestResponse<DiplomaDetailDto?>.Ok(diplomaDto, 
                 "Diploma retrieved successfully.");
         }
-        #endregion
     }
 }

@@ -23,23 +23,21 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 
         public async Task<RequestResponse<Unit>> Handle(EnrollDiplomaOrchestrator request, CancellationToken cancellationToken)
         {
-            //var userId =  _currentUserId.GetUserId();
-            var studentId = Guid.Parse("AAAAAAAA-1111-1111-1111-AAAAAAAAAAAA");
-            if(studentId == null)
-                return RequestResponse<Unit>.Fail("User is not authenticated.");
+            var studentId = _currentUserId.GetStudentId() ?? _currentUserId.GetUserId();
+            if (studentId == null)
+                return RequestResponse<Unit>.Fail("User is not authenticated.", 401);
 
             var diplomaExsist = await _mediator.Send(new CheckIfDiplomaExistsQueryQuery(request.DiplomaId), cancellationToken);
-            if (!diplomaExsist.Success )
-                return RequestResponse<Unit>.Fail("Diploma does not exist.");
-
+            if (!diplomaExsist.Success)
+                return RequestResponse<Unit>.Fail("Diploma does not exist.", 404);
 
             var isEnrolled = await _mediator.Send(
-                new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(studentId, request.DiplomaId), cancellationToken);
+                new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(studentId.Value, request.DiplomaId), cancellationToken);
 
             if (isEnrolled.Success)
                 return RequestResponse<Unit>.Fail(isEnrolled.Message, isEnrolled.StatusCode);
            
-            var enrollResponse = await _mediator.Send(new EnrollStudentInDiplomaCommand(studentId, request.DiplomaId), cancellationToken);
+            var enrollResponse = await _mediator.Send(new EnrollStudentInDiplomaCommand(studentId.Value, request.DiplomaId), cancellationToken);
 
             if (!enrollResponse.Success)
                 return RequestResponse<Unit>.Fail("Enrollment failed.");

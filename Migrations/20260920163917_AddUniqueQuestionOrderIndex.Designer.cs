@@ -12,8 +12,8 @@ using exam_system.Persistence.Context;
 namespace exam_system.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260921143820_createDatabase")]
-    partial class createDatabase
+    [Migration("20260920163917_AddUniqueQuestionOrderIndex")]
+    partial class AddUniqueQuestionOrderIndex
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -468,7 +468,8 @@ namespace exam_system.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuizId");
+                    b.HasIndex("QuizId", "OrderIndex")
+                        .IsUnique();
 
                     b.ToTable("Questions", (string)null);
                 });

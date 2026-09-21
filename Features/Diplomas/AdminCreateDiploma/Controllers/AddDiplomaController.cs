@@ -23,7 +23,7 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Diploma([FromBody] DiplomaViewModel  diplomaViewModel, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> CreateDiploma([FromBody] DiplomaViewModel  diplomaViewModel, CancellationToken cancellationToken = default)
         {
             var requestResponse = await _mediator.Send(
                 new AddDiplomaCommand(

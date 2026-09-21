@@ -1,4 +1,4 @@
-﻿using exam_system.Common.Services.Interfaces;
+using exam_system.Common.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace exam_system.Common.Services;
@@ -14,7 +14,7 @@ public class EmailService : IEmailService
 
     public Task SendEmailAsync(string toEmail, string subject, string body, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Sending email to {Email} | Subject: {Subject} | Body: {Body}", toEmail, subject, body);
+        _logger.LogInformation("Sending email to {Email} | Subject: {Subject}", toEmail, subject);
         return Task.CompletedTask;
     }
 }

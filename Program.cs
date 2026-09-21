@@ -16,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserId, CurrentUserId>();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -28,12 +29,19 @@ builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
+// Fail fast if JWT signing key was not supplied out-of-band
+if (string.IsNullOrWhiteSpace(builder.Configuration["Jwt:Key"]))
+    throw new InvalidOperationException(
+        "Jwt:Key must be provided via user-secrets or environment variable. " +
+        "Dev: dotnet user-secrets set \"Jwt:Key\" \"<generated-key>\"");
+
 var app = builder.Build();
 
 
-// Seed Database automatically on startup
-using (var scope = app.Services.CreateScope())
+// Seed Database only in Development environment
+if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
     try
@@ -43,7 +51,9 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "An error occurred during database migration/seeding.");
+        var logger2 = app.Services.GetRequiredService<ILogger<Program>>();
+        logger2.LogError(ex, "An error occurred during database seeding.");
+        throw; // do not start in an unknown state
     }
 }
 
