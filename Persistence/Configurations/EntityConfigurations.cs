@@ -159,6 +159,7 @@ public class QuestionConfiguration : IEntityTypeConfiguration<Question>
             .WithMany(qz => qz.Questions)
             .HasForeignKey(q => q.QuizId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.HasIndex(q => new { q.QuizId, q.OrderIndex }).IsUnique();
     }
 }
 

@@ -1,13 +1,14 @@
-﻿using exam_system.Features.Quizzes.AdminQuizPublishCheck.Mappings;
+using exam_system.Features.Quizzes.AdminQuizPublishCheck.Mappings;
 using exam_system.Features.Quizzes.AdminQuizPublishCheck.Queries;
 using exam_system.Features.Quizzes.AdminQuizPublishCheck.ViewModels;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Controllers
 {
-
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/admin/quizzes")]
     public class QuizPrePublishController : ControllerBase
@@ -22,7 +23,7 @@ namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Controllers
         [HttpGet]
         public async Task<ActionResult<EndpointResponse<QuizPublishReadinessViewModel>>> GetQuizPublishReadiness(Guid id)
         {
-            
+
             var result = await _mediator.Send(new GetQuizPublishReadinessQuery(id));
 
             var viewModel = result.Data?.ToViewModel();
@@ -34,7 +35,7 @@ namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Controllers
                 result.Message,
                 viewModel,
                 result.Errors
-               
+
                 );
 
             return StatusCode(result.StatusCode, response);

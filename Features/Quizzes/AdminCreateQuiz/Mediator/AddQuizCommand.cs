@@ -6,7 +6,7 @@ using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
 {
-    public record AddQuizCommand(string Title , int DurationMinutes , int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<Result<int>>;
+    public record AddQuizCommand(string Title, int DurationMinutes, int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<Result<int>>;
 
     internal class AddQuizCommandValidator : AbstractValidator<AddQuizCommand>
     {
@@ -20,10 +20,10 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
         }
     }
 
-    internal class AddQuizCommandHandler : IRequestHandler<AddQuizCommand , Result<int>>
+    internal class AddQuizCommandHandler : IRequestHandler<AddQuizCommand, Result<int>>
     {
-        private readonly IGenericRepository<Quiz> _quizRepository ;
-        private readonly IUnitOfWork _unitOfWork ;
+        private readonly IGenericRepository<Quiz> _quizRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AddQuizCommandHandler(IGenericRepository<Quiz> quizRepository, IUnitOfWork unitOfWork)
         {
@@ -41,11 +41,11 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
                 StartDate = request.StartDate,
                 EndDate = request.EndDate
             };
-            
+
             _quizRepository.Add(quiz);
 
             var addedRowAffected = await _unitOfWork.SaveChangesAsync(cancellationToken);
-            if(addedRowAffected > 0)
+            if (addedRowAffected > 0)
             {
                 return Result<int>.Success(addedRowAffected);
             }

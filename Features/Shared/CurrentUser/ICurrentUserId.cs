@@ -3,5 +3,6 @@
     public interface ICurrentUserId
     {
         Guid? GetUserId();
+        Guid? GetStudentId();
     }
 }

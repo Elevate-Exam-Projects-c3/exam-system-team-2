@@ -12,7 +12,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
         private readonly IGenericRepository<Question> _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateQuestionCommandHandler(IGenericRepository<Question> questionRepository , IUnitOfWork unitOfWork)
+        public CreateQuestionCommandHandler(IGenericRepository<Question> questionRepository, IUnitOfWork unitOfWork)
         {
             _questionRepository = questionRepository;
             _unitOfWork = unitOfWork;
@@ -21,8 +21,9 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
         {
 
             // 1. Calculate OrderIndex
-            var orderIndex = await _questionRepository
-                .CountAsync(q => q.QuizId == request.QuizId);
+            var maxOrder = await _questionRepository
+              .Get(q => q.QuizId == request.QuizId)
+              .MaxAsync(q => (int?)q.OrderIndex, cancellationToken) ?? 0;
 
             // 2. Create Question
             var question = new Question
@@ -30,12 +31,12 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
                 QuizId = request.QuizId,
                 Text = request.Text,
                 Explanation = request.Explanation,
-                OrderIndex = orderIndex + 1
+                OrderIndex = maxOrder + 1
             };
 
             // 3. Add Question
             await _questionRepository.AddAsync(question);
-           return RequestResponse<Guid>.Created(question.Id, "Question created successfully.");
+            return RequestResponse<Guid>.Created(question.Id, "Question created successfully.");
         }
 
 

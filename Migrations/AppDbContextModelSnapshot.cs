@@ -465,7 +465,8 @@ namespace exam_system.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuizId");
+                    b.HasIndex("QuizId", "OrderIndex")
+                        .IsUnique();
 
                     b.ToTable("Questions", (string)null);
                 });

@@ -1,10 +1,12 @@
-﻿using exam_system.Features.Quizzes.AdminUnpublishQuiz.Orchestrators;
+using exam_system.Features.Quizzes.AdminUnpublishQuiz.Orchestrators;
 using exam_system.Features.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Quizzes.AdminUnpublishQuiz.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/admin/quizzes")]
     public class AdminUnPublishQuizController : ControllerBase
