@@ -22,11 +22,11 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Controllers
 
         [Authorize(Roles = "Student")]
         [HttpPost("{attemptId:guid}/answers")]
-        public async Task<ActionResult<EndpointResponse>> SubmitAnswer(Guid attemptId,[FromBody] SubmitAnswerViewModel request)
+        public async Task<ActionResult<EndpointResponse>> SubmitAnswer(Guid attemptId, [FromBody] SubmitAnswerViewModel request)
         {
             var callerUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            var orchestratorRequest = request.ToOrchestratorRequest(attemptId, callerUserId); 
+            var orchestratorRequest = request.ToOrchestratorRequest(attemptId, callerUserId);
 
             var result = await _mediator.Send(orchestratorRequest);
 

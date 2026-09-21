@@ -58,7 +58,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         _dbSet.Update(entity);
     }
 
- 
+
     // Soft Delete - marks as deleted but keeps in database
     public void Delete(T entity)
     {

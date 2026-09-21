@@ -12,7 +12,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
     {
         private readonly IGenericRepository<QuizAttempt> _attemptRepository;
 
-        public GetAttemptForAnswerQueryHandler( IGenericRepository<QuizAttempt> attemptRepository)
+        public GetAttemptForAnswerQueryHandler(IGenericRepository<QuizAttempt> attemptRepository)
         {
             _attemptRepository = attemptRepository;
         }
@@ -32,7 +32,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
 
             if (attempt is null)
             {
-                return RequestResponse<AttemptAnswerDto>.Fail( "Attempt not found", 404);
+                return RequestResponse<AttemptAnswerDto>.Fail("Attempt not found", 404);
             }
 
             return RequestResponse<AttemptAnswerDto>.Ok(attempt);

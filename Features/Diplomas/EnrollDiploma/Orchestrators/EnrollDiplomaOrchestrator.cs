@@ -4,5 +4,5 @@ using MediatR;
 namespace exam_system.Features.Diplomas.EnrollDiploma.Orchestrators
 {
     public record EnrollDiplomaOrchestrator(Guid DiplomaId) : IRequest<RequestResponse<Unit>>;
-    
+
 }

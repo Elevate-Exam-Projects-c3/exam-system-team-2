@@ -24,6 +24,6 @@ namespace exam_system.Features.Attempts.GetAttemptResults.Mappings
                     .ToList()
             };
         }
-    }    
+    }
 }
 

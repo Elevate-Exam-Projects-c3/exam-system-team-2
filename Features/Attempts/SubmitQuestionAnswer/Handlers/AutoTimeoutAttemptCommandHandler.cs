@@ -18,13 +18,13 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
         }
         public async Task<RequestResponse> Handle(AutoTimeoutAttemptCommand request, CancellationToken cancellationToken)
         {
-            
+
             var attempt = await _attemptRepository.Get(a => a.Id == request.AttemptId)
                                                   .FirstOrDefaultAsync(cancellationToken);
 
             if (attempt is null)
             {
-                return RequestResponse.Fail("Attempt not found.",404);
+                return RequestResponse.Fail("Attempt not found.", 404);
             }
 
             attempt.Status = AttemptStatus.TimedOut;

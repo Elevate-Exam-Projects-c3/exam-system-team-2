@@ -7,7 +7,7 @@ namespace exam_system.Features.Attempts.GetAttemptMonitoring.Mappings
     public static class AttemptSummaryMappingExtensions
     {
         // Converts an AttemptSummaryDto to an AttemptSummaryViewModel :
-        public static AttemptSummaryViewModel ToViewModel( this AttemptSummaryDto dto)
+        public static AttemptSummaryViewModel ToViewModel(this AttemptSummaryDto dto)
         {
             return new AttemptSummaryViewModel
             {

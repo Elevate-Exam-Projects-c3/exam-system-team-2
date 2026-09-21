@@ -39,16 +39,16 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
             //Build Dtos
             var quizDtos = quizzes.Select(q => new QuizDetailsDto
             {
-                    Id = q.Id,
-                    Title = q.Title,
-                    DurationMinutes = q.DurationMinutes,
-                    PassScore = q.PassScore,
-                    MaxAttempts= q.MaxAttempts
+                Id = q.Id,
+                Title = q.Title,
+                DurationMinutes = q.DurationMinutes,
+                PassScore = q.PassScore,
+                MaxAttempts = q.MaxAttempts
             }).ToList();
 
             return RequestResponse<IEnumerable<QuizDetailsDto>>
                 .Ok(quizDtos, "Published quizzes retrieved successfully.");
 
         }
-    } 
+    }
 }

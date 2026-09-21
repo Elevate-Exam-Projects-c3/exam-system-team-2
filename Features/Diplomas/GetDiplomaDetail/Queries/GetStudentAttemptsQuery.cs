@@ -4,5 +4,5 @@ using MediatR;
 
 namespace exam_system.Features.Diplomas.GetDiplomaDetail.Queries
 {
-    public record GetStudentAttemptsQuery(Guid StudentId,IEnumerable<Guid> QuizIds) : IRequest<RequestResponse<IEnumerable<StudentAttemptDto?>>>;
+    public record GetStudentAttemptsQuery(Guid StudentId, IEnumerable<Guid> QuizIds) : IRequest<RequestResponse<IEnumerable<StudentAttemptDto?>>>;
 }

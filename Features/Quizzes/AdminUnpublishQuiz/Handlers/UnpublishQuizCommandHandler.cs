@@ -12,7 +12,7 @@ namespace exam_system.Features.Quizzes.AdminUnpublishQuiz.Handlers
         private readonly IGenericRepository<Quiz> _quizRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UnpublishQuizCommandHandler(IGenericRepository<Quiz> quizRepository , IUnitOfWork unitOfWork)
+        public UnpublishQuizCommandHandler(IGenericRepository<Quiz> quizRepository, IUnitOfWork unitOfWork)
         {
             _quizRepository = quizRepository;
             _unitOfWork = unitOfWork;

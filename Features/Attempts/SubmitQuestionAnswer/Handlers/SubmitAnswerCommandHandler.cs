@@ -41,7 +41,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
 
                 await _answerRepository.AddAsync(answer);
             }
-            
+
             return RequestResponse.Ok("Answer saved successfully");
         }
     }

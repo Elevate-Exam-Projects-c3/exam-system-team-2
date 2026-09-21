@@ -18,7 +18,7 @@ namespace exam_system.Features.Quizzes.AdminUnpublishQuiz.Orchestrators.Orchestr
         {
             //1. Count in-progress attempts on this quiz :
             var attemptsCountResult = await _mediator.Send(new CountInProgressQuizAttemptsQuery(request.QuizId), cancellationToken);
-           
+
             //check if the count query was successful :
             if (!attemptsCountResult.Success)
             {

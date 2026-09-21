@@ -13,7 +13,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
         private readonly IMediator _mediator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public SubmitAnswerOrchestratorRequestHandler(IMediator mediator , IUnitOfWork unitOfWork)
+        public SubmitAnswerOrchestratorRequestHandler(IMediator mediator, IUnitOfWork unitOfWork)
         {
             _mediator = mediator;
             _unitOfWork = unitOfWork;
@@ -37,7 +37,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
             //2. Ownership Check :
             if (attempt.StudentUserId != request.CallerUserId)
             {
-                return RequestResponse.Fail("Attempt not found.", 404);   
+                return RequestResponse.Fail("Attempt not found.", 404);
             }
 
             //3. Make sure the attempt is still in progress
@@ -51,20 +51,20 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
             // once EXAM-135 is completed.
             if (DateTime.UtcNow > attempt.Deadline)
             {
-                var timeoutResult = await _mediator.Send(new AutoTimeoutAttemptCommand(request.AttemptId),cancellationToken);
+                var timeoutResult = await _mediator.Send(new AutoTimeoutAttemptCommand(request.AttemptId), cancellationToken);
                 if (!timeoutResult.Success)
                 {
                     return timeoutResult;
                 }
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-                return RequestResponse.Fail("The attempt time has expired. The attempt has been auto-submitted.",410);
+                return RequestResponse.Fail("The attempt time has expired. The attempt has been auto-submitted.", 410);
             }
 
 
 
             //5. Get the question is a part of the quiz :
-            var questionResult = await _mediator.Send( new ValidateQuestionForAttemptQuery( request.QuestionId,attempt.QuizId),cancellationToken);
+            var questionResult = await _mediator.Send(new ValidateQuestionForAttemptQuery(request.QuestionId, attempt.QuizId), cancellationToken);
 
             if (!questionResult.Success)
             {
@@ -77,7 +77,7 @@ namespace exam_system.Features.Attempts.SubmitQuestionAnswer.Handlers
             //If the question isn't part of the quiz :
             if (!questionResult.Data!.IsValid)
             {
-                return RequestResponse.Fail("Question does not belong to the attempt's quiz.",400);
+                return RequestResponse.Fail("Question does not belong to the attempt's quiz.", 400);
             }
 
             //6. Save / update the answer
