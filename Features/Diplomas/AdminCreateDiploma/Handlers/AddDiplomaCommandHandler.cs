@@ -8,29 +8,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.AdminCreateDiploma.Handlers
 {
-    public class AddDiplomaCommandHandler : IRequestHandler<AddDiplomaCommand, RequestResponse<Unit>>
+    public class AddDiplomaCommandHandler : IRequestHandler<AddDiplomaCommand, RequestResponse<Guid>>
     {
-        #region Fields
         private readonly IGenericRepository<Diploma> _diplomaRepo;
         private readonly IUnitOfWork _unitOfWork;
-        #endregion
 
-        #region Constructor
         public AddDiplomaCommandHandler(IGenericRepository<Diploma> diplomaRepo, IUnitOfWork unitOfWork)
         {
             _diplomaRepo = diplomaRepo;
             _unitOfWork = unitOfWork;   
         }
-        #endregion
 
-        #region Handle Operation 
-        public async Task<RequestResponse<Unit>> Handle(AddDiplomaCommand request, CancellationToken cancellationToken)
+        public async Task<RequestResponse<Guid>> Handle(AddDiplomaCommand request, CancellationToken cancellationToken)
         {
-            var diplomaExists = await _diplomaRepo.GetAll().AnyAsync(d => d.Title == request.Title, cancellationToken);
+            var diplomaExists = await _diplomaRepo
+                .GetAll()
+                .AnyAsync(d => d.Title == request.Title, cancellationToken);
 
 
             if (diplomaExists) 
-                return RequestResponse<Unit>.Fail($"Diploma with title {request.Title} title already exists.");
+                return RequestResponse<Guid>.Fail($"Diploma with title {request.Title} title already exists.");
             
 
             var diploma = new Diploma
@@ -43,8 +40,7 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Handlers
             await _diplomaRepo.AddAsync(diploma);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             
-            return RequestResponse<Unit>.Ok(Unit.Value, "Diploma added successfully.");
+            return RequestResponse<Guid>.Ok(diploma.Id, "Diploma added successfully.");
         }
-        #endregion
     }
 }

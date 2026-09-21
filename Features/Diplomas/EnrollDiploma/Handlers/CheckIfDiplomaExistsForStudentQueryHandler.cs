@@ -14,31 +14,25 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 {
     public class CheckIfDiplomaExistsQueryHandler : IRequestHandler<CheckIfDiplomaExistsQueryQuery, RequestResponse<Unit>>
     {
-        #region Fields
         private readonly IGenericRepository<Diploma> _diplomaRepository;
-        #endregion
 
-        #region Constructor
         public CheckIfDiplomaExistsQueryHandler(IGenericRepository<Diploma> diplomaRepository)
         {
             _diplomaRepository = diplomaRepository;
         }
-        #endregion
 
-        #region Handler Operations
         public async Task<RequestResponse<Unit>> Handle(CheckIfDiplomaExistsQueryQuery request, CancellationToken cancellationToken)
         {            
-            var diploma = await  _diplomaRepository.GetAll()
+            var diplomaExists = await  _diplomaRepository.GetAll()
                 .Where(d => d.Id == request.DiplomaId)
                 .Where(d => d.Quizzes.Any(q => q.Status == QuizStatus.Published))
-                .FirstOrDefaultAsync(cancellationToken);
+                .AnyAsync(cancellationToken);
 
-            if (diploma == null)
-                return RequestResponse<Unit>.Fail("Diploma not found or has been deleted.");
+            if (!diplomaExists)
+                return RequestResponse<Unit>.Fail("Diploma not found or has no published quizzes.", 404);
 
-            return RequestResponse<Unit>.Ok(Unit.Value, "Diploma retrieved successfully.");
+            return RequestResponse<Unit>.Ok(Unit.Value, "Diploma exists.");
         }
-        #endregion
 
 
     }

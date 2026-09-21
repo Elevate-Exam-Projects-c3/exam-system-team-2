@@ -10,18 +10,13 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Handlers
 {
     public class GetAllDiplomasQueryHandler:IRequestHandler<GetAllDiplomasQuery,RequestResponse<PaginatedResult<DiplomaDto>>>
     {
-        #region Fields
         private readonly IGenericRepository<Diploma> _diplomaRepo;
-        #endregion
 
-        #region Constructor
         public GetAllDiplomasQueryHandler(IGenericRepository<Diploma> diplomaRepo)
         {
             _diplomaRepo = diplomaRepo;
         }
-        #endregion
 
-        #region Handle Method
         public async Task<RequestResponse<PaginatedResult<DiplomaDto>>> Handle(GetAllDiplomasQuery request, CancellationToken cancellationToken)
         {
             var skip = (request.PageNumber - 1) * request.PageSize;
@@ -30,9 +25,10 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Handlers
                 .CountAsync(d => d.Quizzes.Any(q => q.Status == QuizStatus.Published),
                 cancellationToken);
 
-            var diplomas = _diplomaRepo.GetAll()
+            var diplomas = _diplomaRepo.GetAll() 
                 .Where(d => d.Quizzes.Any(q=>q.Status==QuizStatus.Published))
                 .AsNoTracking()
+                .OrderBy(d=>d.Title).ThenBy(d=>d.Id)
                 .Skip(skip)
                 .Take(request.PageSize);
             
@@ -43,7 +39,7 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Handlers
                     Id = d.Id,
                     Title = d.Title,
                     Description = d.Description,
-                    CountOfQuizzes = d.Quizzes.Count(q => q.Status == QuizStatus.Published)
+                    CountOfQuizzes = d.Quizzes.Count(q => q.Status == QuizStatus.Published) 
                 }).ToListAsync(cancellationToken);
             //untill now not handle student's own progress => 2/5
             
@@ -56,6 +52,5 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Handlers
 
             return RequestResponse<PaginatedResult<DiplomaDto>>.Ok(paginatedResult, "Diplomas retrieved successfully.");
         }
-        #endregion
     }
 }

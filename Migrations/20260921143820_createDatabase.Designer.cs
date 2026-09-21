@@ -12,7 +12,7 @@ using exam_system.Persistence.Context;
 namespace exam_system.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260912103928_createDatabase")]
+    [Migration("20260921143820_createDatabase")]
     partial class createDatabase
     {
         /// <inheritdoc />

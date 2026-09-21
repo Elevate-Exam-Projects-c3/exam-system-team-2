@@ -10,46 +10,25 @@ using System.Security.Claims;
 
 namespace exam_system.Features.Diplomas.EnrollDiploma.Controllers
 {
+    [Tags(tags: "Diplomas")]
+    //[Authorize(Roles = "Student")]
     [Route("api/[controller]")]
     [ApiController]
     public class EnrollDiplomaController : ControllerBase
     {
-        #region Fields
         private readonly IMediator _mediator;
-        #endregion
 
-        #region Constructor
         public EnrollDiplomaController(IMediator mediator)
         {
             _mediator = mediator;
         }
-        #endregion
 
-        #region CRUD Operations
-        [Authorize(Roles = "Student")]
+        //[Authorize(Roles = "Student")]
         [HttpPost("{diplomaId}")]
-        public async Task<IActionResult> EnrollDiploma([FromRoute] Guid diplomaId)
+        public async Task<IActionResult> EnrollDiploma([FromRoute] Guid diplomaId,CancellationToken cancellationToken = default)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState
-                    .Where(x => x.Value?.Errors.Count > 0)
-                    .ToDictionary(
-                        x => x.Key,
-                        x => x.Value!.Errors
-                            .Select(e => e.ErrorMessage)
-                            .ToArray());
+            var requestResponse = await _mediator.Send(new EnrollDiplomaOrchestrator(diplomaId),cancellationToken);
 
-                return BadRequest(new EndpointResponse
-                {
-                    Success = false,
-                    Message = "Validation failed",
-                    Errors = errors
-                });
-            }
-
-            var requestResponse = await _mediator.Send(new EnrollDiplomaOrchestrator(diplomaId));
-        
             var endpointResponse = new EndpointResponse
             {
                 Success = requestResponse.Success,
@@ -60,12 +39,6 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Controllers
                 return BadRequest(endpointResponse);
 
             return Ok(endpointResponse);
-
-
-
-
-            return Ok();
         }
-        #endregion
     }
 }

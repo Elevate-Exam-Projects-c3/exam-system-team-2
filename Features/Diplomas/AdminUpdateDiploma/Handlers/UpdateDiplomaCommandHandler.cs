@@ -11,20 +11,15 @@ namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Handlers
 {
     public class UpdateDiplomaCommandHandler:IRequestHandler<UpdateDiplomaCommand, RequestResponse<Unit>>
     {
-        #region Fields
         private readonly IGenericRepository<Diploma> _diplomaRepo;
         private readonly IUnitOfWork _unitOfWork;
-        #endregion
 
-        #region Constructor
         public UpdateDiplomaCommandHandler(IGenericRepository<Diploma> diplomaRepo, IUnitOfWork unitOfWork)
         {
             _diplomaRepo = diplomaRepo;
             _unitOfWork = unitOfWork;
         }
-        #endregion
 
-        #region Handle Operations
        public async Task<RequestResponse<Unit>> Handle(UpdateDiplomaCommand request, CancellationToken cancellationToken)
         {
             var existingDiploma = await _diplomaRepo.GetByIdAsync(request.Id);
@@ -58,6 +53,5 @@ namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Handlers
 
             return RequestResponse<Unit>.Ok(Unit.Value,"Diploma is updated succussfly."); 
         }
-        #endregion
     }
 }

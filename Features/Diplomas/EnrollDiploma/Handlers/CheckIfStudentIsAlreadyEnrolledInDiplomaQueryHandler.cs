@@ -7,30 +7,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 {
-    public class CheckIfStudentIsAlreadyEnrolledInDiplomaQueryHandler:IRequestHandler<CheckIfStudentIsAlreadyEnrolledInDiplomaQuery, RequestResponse<bool>>
+    public class CheckIfStudentIsAlreadyEnrolledInDiplomaQueryHandler:IRequestHandler<CheckIfStudentIsAlreadyEnrolledInDiplomaQuery, RequestResponse<Unit>>
     {
-        #region Fields
         private readonly IGenericRepository<StudentEnrollment> _enrollmentRepo;
-        #endregion
-        #region Constructor
         public CheckIfStudentIsAlreadyEnrolledInDiplomaQueryHandler(IGenericRepository<StudentEnrollment> enrollmentRepo)
         {
             _enrollmentRepo = enrollmentRepo;
         }
         
-        #endregion
-        #region Handle Operation
-        public async Task<RequestResponse<bool>> Handle(CheckIfStudentIsAlreadyEnrolledInDiplomaQuery request, CancellationToken cancellationToken)
+        public async Task<RequestResponse<Unit>> Handle(CheckIfStudentIsAlreadyEnrolledInDiplomaQuery request, CancellationToken cancellationToken)
         {
-            var existingEnrollment = await _enrollmentRepo.GetAll()
+            var existingEnrollment = await _enrollmentRepo
+                .GetAll()
                 .Where(se => se.StudentId == request.studentId && se.DiplomaId == request.diplomaId)
-                .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+                .AnyAsync(cancellationToken);
 
-            if( existingEnrollment != null)
-                return RequestResponse<bool>.Ok(true, "User is already enrolled in the diploma.");
+            if(!existingEnrollment)
+                return RequestResponse<Unit>.Fail("User is not enrolled in the diploma.");
 
-            return RequestResponse<bool>.Ok(false, "User is not enrolled in the diploma.");
+            return RequestResponse<Unit>.Ok(Unit.Value, "Student is already enrolled in the diploma.");
         }
-        #endregion
     }
 }

@@ -8,51 +8,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Tags(tags: "Diplomas")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AddDiplomaController : ControllerBase
     {
-        #region Fields
         private readonly IMediator _mediator;
-        #endregion
 
-        #region Constructor
         public AddDiplomaController(IMediator mediator)
         {
             _mediator = mediator;
         }
-        #endregion
-
-        #region CRUD Operations
 
 
-        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateDiploma([FromBody] DiplomaViewModel  diplomaViewModel)
+        public async Task<IActionResult> Diploma([FromBody] DiplomaViewModel  diplomaViewModel, CancellationToken cancellationToken = default)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState
-                    .Where(x => x.Value?.Errors.Count > 0)
-                    .ToDictionary(
-                        x => x.Key,
-                        x => x.Value!.Errors
-                            .Select(e => e.ErrorMessage)
-                            .ToArray());
-
-                return BadRequest(new EndpointResponse
-                {
-                    Success = false,
-                    Message = "Validation failed",
-                    Errors = errors
-                });
-            }
             var requestResponse = await _mediator.Send(
                 new AddDiplomaCommand(
                     diplomaViewModel.Title, 
                     diplomaViewModel.Description, 
-                    diplomaViewModel.ImageUrl));
+                    diplomaViewModel.ImageUrl),cancellationToken);
 
             var endpointResponse = new EndpointResponse
             {
@@ -63,9 +40,8 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
             if(!endpointResponse.Success)
                 return BadRequest(endpointResponse);
 
-            return Ok(endpointResponse);
+            return StatusCode(StatusCodes.Status201Created, requestResponse);
         }
-        #endregion
 
     }
 }
