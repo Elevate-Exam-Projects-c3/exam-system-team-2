@@ -1,4 +1,4 @@
-﻿using exam_system.Common.Enums;
+using exam_system.Common.Enums;
 using exam_system.Domain.Entities.Quizzes;
 using exam_system.Features.Quizzes.AdminDeleteQuiz.Commands;
 using exam_system.Features.Shared;
@@ -21,12 +21,12 @@ namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Orchestrators
         public async Task<RequestResponse<bool>> Handle(DeleteQuizOrchestrator request, CancellationToken cancellationToken)
         {
             var GetQuiz = await quizRepository.GetByIdAsync(request.QuizId);
-            if(GetQuiz is null)
+            if (GetQuiz is null)
             {
                 return RequestResponse<bool>.Fail("The Exam is not found", 404);
             }
 
-            if(GetQuiz.Status == QuizStatus.Published)
+            if (GetQuiz.Status == QuizStatus.Published)
             {
                 return RequestResponse<bool>.Fail("The Exam is published, you can't delete it. You must unpublish it first then delete it", 400);
             }
@@ -34,8 +34,8 @@ namespace exam_system.Features.Quizzes.AdminDeleteQuiz.Orchestrators
             GetQuiz.IsDeleted = true;
             GetQuiz.DeletedAt = DateTime.UtcNow;
 
-            var result = await unitOfWork.SaveChangesAsync();
-            if(result > 0)
+            var result = await unitOfWork.SaveChangesAsync(cancellationToken);
+            if (result > 0)
             {
                 return RequestResponse<bool>.Ok(true, "The Exam has been deleted successfully");
             }

@@ -28,7 +28,7 @@ public class Quiz : BaseEntity
 
     public void UnPublichArchived()
     {
-        if(Status == QuizStatus.Published)
+        if (Status == QuizStatus.Published)
         {
             Status = QuizStatus.Archived;
             UpdatedAt = DateTime.UtcNow;
