@@ -20,5 +20,21 @@ namespace exam_system.Controllers
 
             return StatusCode(response.StatusCode, response);
         }
+
+        protected IActionResult HandleResult<T>(RequestResponse<T> result)
+        {
+            if (result == null) return NotFound();
+
+            var response = EndpointResponse<T>.FromResult(result);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        protected IActionResult HandleResult(RequestResponse result)
+        {
+            if (result == null) return NotFound();
+
+            var response = EndpointResponse.FromResult(result);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

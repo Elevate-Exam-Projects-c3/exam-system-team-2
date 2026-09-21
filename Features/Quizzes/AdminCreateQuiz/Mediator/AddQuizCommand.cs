@@ -1,4 +1,4 @@
-﻿using exam_system.Domain.Entities.Quizzes;
+using exam_system.Domain.Entities.Quizzes;
 using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
 using FluentValidation;
@@ -6,7 +6,7 @@ using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
 {
-    public record AddQuizCommand(string Title, int DurationMinutes, int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<Result<int>>;
+    public record AddQuizCommand(string Title, int DurationMinutes, int PassScore, int Score, DateTime StartDate, DateTime EndDate) : IRequest<RequestResponse<Guid>>;
 
     internal class AddQuizCommandValidator : AbstractValidator<AddQuizCommand>
     {
@@ -20,7 +20,7 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
         }
     }
 
-    internal class AddQuizCommandHandler : IRequestHandler<AddQuizCommand, Result<int>>
+    internal class AddQuizCommandHandler : IRequestHandler<AddQuizCommand, RequestResponse<Guid>>
     {
         private readonly IGenericRepository<Quiz> _quizRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -30,7 +30,8 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
             _quizRepository = quizRepository;
             _unitOfWork = unitOfWork;
         }
-        public async Task<Result<int>> Handle(AddQuizCommand request, CancellationToken cancellationToken)
+
+        public async Task<RequestResponse<Guid>> Handle(AddQuizCommand request, CancellationToken cancellationToken)
         {
             var quiz = new Quiz
             {
@@ -47,9 +48,9 @@ namespace exam_system.Features.Quizzes.AdminCreateQuiz.Mediator
             var addedRowAffected = await _unitOfWork.SaveChangesAsync(cancellationToken);
             if (addedRowAffected > 0)
             {
-                return Result<int>.Success(addedRowAffected);
+                return RequestResponse<Guid>.Created(quiz.Id, "Quiz created successfully.");
             }
-            return Result<int>.Failure("Failed to add quiz.");
+            return RequestResponse<Guid>.Fail("Failed to create quiz.");
         }
     }
 }
