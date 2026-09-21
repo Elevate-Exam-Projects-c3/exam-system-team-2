@@ -20,12 +20,17 @@ namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Handlers
         {
             //1. Get Quiz With Questions and Question Options :
             var quiz = await _quizRepository.Get(q => q.Id == request.QuizId)
-            .Select(q => new{q.Id,q.DurationMinutes,q.PassScore, Questions = q.Questions
-            .Where(question => !question.IsDeleted)
+            .Select(q => new
+            {
+                q.Id,
+                q.DurationMinutes,
+                q.PassScore,
+                Questions = q.Questions
             .Select(question => new
             {
-                CorrectOptionsCount = question.Options.Count(option =>!option.IsDeleted &&option.IsCorrect)
-            }).ToList() }) .FirstOrDefaultAsync();
+                CorrectOptionsCount = question.Options.Count(option => option.IsCorrect)
+            }).ToList()
+            }).FirstOrDefaultAsync(cancellationToken);
 
             if (quiz == null)
             {

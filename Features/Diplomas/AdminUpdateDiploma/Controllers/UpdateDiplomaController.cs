@@ -1,4 +1,4 @@
-﻿using exam_system.Features.Diplomas.AdminCreateDiploma.ViewModels;
+using exam_system.Features.Diplomas.AdminCreateDiploma.ViewModels;
 using exam_system.Features.Diplomas.AdminUpdateDiploma.Commands;
 using exam_system.Features.Diplomas.AdminUpdateDiploma.ViewModels;
 using exam_system.Features.Diplomas.BrowseDiplomas;
@@ -10,46 +10,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Controllers
 {
+    [Tags(tags: "Diplomas")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UpdateDiplomaController : ControllerBase
     {
-        #region Fields
         private readonly IMediator _mediator;
-        #endregion
 
-        #region Constructor
         public UpdateDiplomaController(IMediator mediator)
         {
             _mediator = mediator;
         }
-        #endregion
 
-        #region CRUD Operations
 
-        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute]Guid id, [FromBody]UpdateDiplomaViewModel diploma)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateDiplomaViewModel diploma, CancellationToken cancellationToken = default)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState
-                    .Where(x => x.Value?.Errors.Count > 0)
-                    .ToDictionary(
-                        x => x.Key,
-                        x => x.Value!.Errors
-                            .Select(e => e.ErrorMessage)
-                            .ToArray());
-
-                return BadRequest(new EndpointResponse
-                {
-                    Success = false,
-                    Message = "Validation failed",
-                    Errors = errors
-                });
-            }
-
-            var requestResponse = await _mediator.Send(new UpdateDiplomaCommand(id, diploma.Title, diploma.Description, diploma.ImageUrl));
+            var requestResponse = await _mediator.Send(new UpdateDiplomaCommand(id, diploma.Title, diploma.Description, diploma.ImageUrl), cancellationToken);
 
             var endpointResponse = new EndpointResponse
             {
@@ -63,6 +41,5 @@ namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Controllers
 
             return Ok(endpointResponse);
         }
-        #endregion
     }
 }

@@ -13,7 +13,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Orchestrators.Orches
         private readonly IMediator _mediator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AddQuestionWithOptionsOrchestratorHandler(IMediator mediator , IUnitOfWork unitOfWork)
+        public AddQuestionWithOptionsOrchestratorHandler(IMediator mediator, IUnitOfWork unitOfWork)
         {
             _mediator = mediator;
             _unitOfWork = unitOfWork;
@@ -22,28 +22,28 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Orchestrators.Orches
         {
 
             //1. Quiz Validation
-            var quiz = await _mediator.Send( new GetQuizByIdQuery(request.QuizId),cancellationToken);
+            var quiz = await _mediator.Send(new GetQuizByIdQuery(request.QuizId), cancellationToken);
 
             if (quiz is null)
             {
-                throw new KeyNotFoundException( $"Quiz with ID {request.QuizId} was not found.");
+                throw new KeyNotFoundException($"Quiz with ID {request.QuizId} was not found.");
             }
 
 
             //2. Action Validation : Options Count must be >= 2 
             if (request.Options.Count < 2)
             {
-                throw new InvalidOperationException( "A question must have at least two options.");
+                throw new InvalidOperationException("A question must have at least two options.");
             }
 
             //3. Options Count must be isCorrect = true for only one option :
             if (request.Options.Count(o => o.IsCorrect) != 1)
             {
-                throw new InvalidOperationException( "A question must have exactly one correct option.");
+                throw new InvalidOperationException("A question must have exactly one correct option.");
             }
 
             //4. Create Question :
-            var questionResult = await _mediator.Send(new CreateQuestionCommand(request.QuizId, request.Text, request.Explanation),cancellationToken);
+            var questionResult = await _mediator.Send(new CreateQuestionCommand(request.QuizId, request.Text, request.Explanation), cancellationToken);
 
             //5. Get QuestionId from Result : 
             if (questionResult.Data == null)

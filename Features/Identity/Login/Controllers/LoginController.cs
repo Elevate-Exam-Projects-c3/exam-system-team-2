@@ -1,4 +1,6 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using exam_system.Features.Identity.Login.Orchestrators;
@@ -7,6 +9,8 @@ using exam_system.Features.Shared;
 
 namespace exam_system.Features.Identity.Login.Controllers;
 
+[Tags("Authentication")]
+[AllowAnonymous]
 [ApiController]
 [Route("api/auth")]
 [EnableRateLimiting("auth-rate-limit")]
@@ -39,7 +43,11 @@ public class LoginController : ControllerBase
             return StatusCode(result.StatusCode, errorResponse);
         }
 
-        var responseVm = new LoginResponseViewModel(result.Data!, "Bearer", 900, result.Message);
+        var responseVm = new LoginResponseViewModel(
+            result.Data!.AccessToken,
+            result.Data.TokenType,
+            result.Data.ExpiresIn,
+            result.Message);
         var successResponse = new EndpointResponse<LoginResponseViewModel>(
             true,
             result.StatusCode,

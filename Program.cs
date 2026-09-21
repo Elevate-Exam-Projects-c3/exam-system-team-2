@@ -1,74 +1,47 @@
+using System.Reflection;
 using exam_system.Common;
 using exam_system.Common.Behaviors;
 using exam_system.Domain.Entities.Diplomas;
+using exam_system.Features.Shared.CurrentUser;
 using exam_system.Persistence;
 using exam_system.Persistence.Context;
 using exam_system.Persistence.DataAccess;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
-using System.Text;
-using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserId, CurrentUserId>();
+builder.Services.AddMemoryCache();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
-        ClockSkew = TimeSpan.Zero
-    };
-});
-
-builder.Services.AddRateLimiter(options =>
-{
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddFixedWindowLimiter("auth-rate-limit", opt =>
-    {
-        opt.PermitLimit = 10;
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 0;
-    });
-});
+builder.Services.AddSwaggerDocumentation();
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddAuthRateLimiter();
 
 builder.Services.AddPersistenceServices(builder.Configuration);
 builder.Services.AddCommonServices();
 
 builder.Services.AddMediatR(typeof(Program).Assembly);
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
-
 builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+// Fail fast if JWT signing key was not supplied out-of-band
+if (string.IsNullOrWhiteSpace(builder.Configuration["Jwt:Key"]))
+    throw new InvalidOperationException(
+        "Jwt:Key must be provided via user-secrets or environment variable. " +
+        "Dev: dotnet user-secrets set \"Jwt:Key\" \"<generated-key>\"");
 
 var app = builder.Build();
 
 
-// Seed Database automatically on startup
-using (var scope = app.Services.CreateScope())
+// Seed Database only in Development environment
+if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
     try
@@ -78,7 +51,9 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "An error occurred during database migration/seeding.");
+        var logger2 = app.Services.GetRequiredService<ILogger<Program>>();
+        logger2.LogError(ex, "An error occurred during database seeding.");
+        throw; // do not start in an unknown state
     }
 }
 

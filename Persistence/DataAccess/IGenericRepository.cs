@@ -17,5 +17,6 @@ public interface IGenericRepository<T> where T : BaseEntity
     Task DeleteAsync(T entity);
     void HardDelete(T entity);
     void DeleteRange(IEnumerable<T> entities);
-    Task<int> CountAsync(Expression<Func<T, bool>>? criteria = null);
+    Task<int> CountAsync(
+    Expression<Func<T, bool>>? criteria = null, CancellationToken cancellationToken = default);
 }
