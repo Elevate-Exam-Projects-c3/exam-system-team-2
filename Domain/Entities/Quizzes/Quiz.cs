@@ -25,4 +25,28 @@ public class Quiz : BaseEntity
     // Navigations
     public ICollection<Question> Questions { get; set; } = new List<Question>();
     public ICollection<QuizAttempt> Attempts { get; set; } = new List<QuizAttempt>();
+
+    public void UnPublichArchived()
+    {
+        if (Status == QuizStatus.Published)
+        {
+            Status = QuizStatus.Archived;
+            UpdatedAt = DateTime.UtcNow;
+        }
+    }
+    public void UnPublishDraft()
+    {
+        if (Status == QuizStatus.Published)
+        {
+            Status = QuizStatus.Draft;
+        }
+    }
+    public void Publish()
+    {
+        if (Status == QuizStatus.Draft || Status == QuizStatus.Archived)
+        {
+            Status = QuizStatus.Published;
+            PublishedAt = DateTime.UtcNow;
+        }
+    }
 }
