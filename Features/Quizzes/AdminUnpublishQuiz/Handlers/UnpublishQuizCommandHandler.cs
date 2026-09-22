@@ -12,7 +12,7 @@ namespace exam_system.Features.Quizzes.AdminUnpublishQuiz.Handlers
         private readonly IGenericRepository<Quiz> _quizRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public UnpublishQuizCommandHandler(IGenericRepository<Quiz> quizRepository , IUnitOfWork unitOfWork)
+        public UnpublishQuizCommandHandler(IGenericRepository<Quiz> quizRepository, IUnitOfWork unitOfWork)
         {
             _quizRepository = quizRepository;
             _unitOfWork = unitOfWork;
@@ -42,7 +42,7 @@ namespace exam_system.Features.Quizzes.AdminUnpublishQuiz.Handlers
             //4. Unpublish the quiz:
             quiz.Status = QuizStatus.Draft;
             _quizRepository.Update(quiz);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return RequestResponse.Ok("Quiz has been unpublished successfully.");
         }

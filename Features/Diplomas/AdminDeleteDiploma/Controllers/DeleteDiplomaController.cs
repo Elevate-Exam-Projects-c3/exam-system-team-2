@@ -9,47 +9,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Tags(tags: "Diplomas")]
+    //[Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class DeleteDiplomaController : ControllerBase
     {
-        #region Fields
         private readonly IMediator _mediator;
-        #endregion
 
-        #region Constructor
         public DeleteDiplomaController(IMediator mediator)
         {
             _mediator = mediator;
         }
-        #endregion
 
-        #region CRUD Operations
 
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDiploma([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteDiploma([FromRoute] Guid id, CancellationToken cancellationToken = default)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState
-                    .Where(x => x.Value?.Errors.Count > 0)
-                    .ToDictionary(
-                        x => x.Key,
-                        x => x.Value!.Errors
-                            .Select(e => e.ErrorMessage)
-                            .ToArray());
-
-                return BadRequest(new EndpointResponse
-                {
-                    Success = false,
-                    Message = "Validation failed",
-                    Errors = errors
-                });
-            }
             var requestResponse = await _mediator.Send(
-                new DeleteDiplomaCommand(id));
+                new DeleteDiplomaCommand(id), cancellationToken);
 
             var endpointResponse = new EndpointResponse
             {
@@ -62,6 +40,5 @@ namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
 
             return Ok(endpointResponse);
         }
-        #endregion
     }
 }

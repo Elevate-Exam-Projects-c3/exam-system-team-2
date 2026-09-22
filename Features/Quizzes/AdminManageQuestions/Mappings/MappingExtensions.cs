@@ -5,7 +5,7 @@ using exam_system.Features.Quizzes.AdminManageQuestions.ViewModels;
 
 namespace exam_system.Features.Quizzes.AdminManageQuestions.Mappings
 {
-    public static class MappingExtensions   
+    public static class MappingExtensions
     {
 
         // Mapping method to convert AddQuestionWithOptionsViewModel to AddQuestionWithOptionsOrchestrator

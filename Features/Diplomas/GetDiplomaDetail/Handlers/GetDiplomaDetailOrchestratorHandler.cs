@@ -8,11 +8,11 @@ using MediatR;
 
 namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
 {
-    public class GetDiplomaDetailOrchestratorHandler:IRequestHandler<GetDiplomaDetailOrchestrator,RequestResponse<ViewDiplomaDetailsDto>>
+    public class GetDiplomaDetailOrchestratorHandler : IRequestHandler<GetDiplomaDetailOrchestrator, RequestResponse<ViewDiplomaDetailsDto>>
     {
         private readonly IMediator _mediator;
         private readonly ICurrentUserId _currentUserId;
-        public GetDiplomaDetailOrchestratorHandler(IMediator mediator, ICurrentUserId currentUserId )
+        public GetDiplomaDetailOrchestratorHandler(IMediator mediator, ICurrentUserId currentUserId)
         {
             _mediator = mediator;
             _currentUserId = currentUserId;
@@ -25,7 +25,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
                 return RequestResponse<ViewDiplomaDetailsDto>
                     .Fail("Unauthorized.", 401);
 
-            var diplomaQuery = await _mediator.Send( 
+            var diplomaQuery = await _mediator.Send(
                 new GetDiplomaDetailByIdQuery(request.DiplomaId),
                 cancellationToken);
 
@@ -41,14 +41,14 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
                 return RequestResponse<ViewDiplomaDetailsDto>
                     .Fail(quizQuery.Message, 404);
 
-            
+
             var diplomaDto = diplomaQuery.Data;
             var diplomaQuizzes = quizQuery.Data.ToList(); //why here worning nullable
 
             var quizIds = diplomaQuizzes
                 .Select(q => q.Id)
                 .ToList();
-            
+
             var attemptQuery = await _mediator.Send(
                 new GetStudentAttemptsQuery(studentId.Value, quizIds),
                 cancellationToken);
@@ -56,7 +56,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
             if (!attemptQuery.Success || attemptQuery.Data == null)
                 return RequestResponse<ViewDiplomaDetailsDto>.Fail(attemptQuery.Message);
 
-            var studentAttempts = attemptQuery.Data 
+            var studentAttempts = attemptQuery.Data
                 .ToDictionary(a => a.QuizId);
 
             var quizzes = diplomaQuizzes.Select(quiz =>

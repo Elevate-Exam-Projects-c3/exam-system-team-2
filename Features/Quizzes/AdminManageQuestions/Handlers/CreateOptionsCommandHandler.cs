@@ -16,7 +16,7 @@ namespace exam_system.Features.Quizzes.AdminManageQuestions.Handlers
         }
         public async Task<RequestResponse> Handle(CreateOptionsCommand request, CancellationToken cancellationToken)
         {
-            
+
 
             //1. Validate Options Count and Correctness :
             if (request.Options.Count < 2)

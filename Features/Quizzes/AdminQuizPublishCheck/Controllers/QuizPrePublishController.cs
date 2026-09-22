@@ -23,7 +23,7 @@ namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Controllers
         [HttpGet]
         public async Task<ActionResult<EndpointResponse<QuizPublishReadinessViewModel>>> GetQuizPublishReadiness(Guid id)
         {
-            
+
             var result = await _mediator.Send(new GetQuizPublishReadinessQuery(id));
 
             var viewModel = result.Data?.ToViewModel();
@@ -35,7 +35,7 @@ namespace exam_system.Features.Quizzes.AdminQuizPublishCheck.Controllers
                 result.Message,
                 viewModel,
                 result.Errors
-               
+
                 );
 
             return StatusCode(result.StatusCode, response);

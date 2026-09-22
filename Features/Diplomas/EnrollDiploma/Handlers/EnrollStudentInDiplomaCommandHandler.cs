@@ -10,34 +10,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 {
-    public class EnrollStudentInDiplomaCommandHandler:IRequestHandler<EnrollStudentInDiplomaCommand, RequestResponse<Unit>>
+    public class EnrollStudentInDiplomaCommandHandler : IRequestHandler<EnrollStudentInDiplomaCommand, RequestResponse<Unit>>
     {
 
-        #region Fields       
         private readonly IGenericRepository<StudentEnrollment> _enrollmentRepo;
         private readonly IUnitOfWork _unitOfWork;
-        #endregion
+        private readonly IMediator _mediator;
 
-        #region Constructor
-        public EnrollStudentInDiplomaCommandHandler(IGenericRepository<StudentEnrollment> enrollmentRepo, IUnitOfWork unitOfWork)
+        public EnrollStudentInDiplomaCommandHandler(IGenericRepository<StudentEnrollment> enrollmentRepo, IUnitOfWork unitOfWork, IMediator mediator)
         {
             _enrollmentRepo = enrollmentRepo;
             _unitOfWork = unitOfWork;
+            _mediator = mediator;
         }
-        #endregion
 
-        #region Handle Operation
         public async Task<RequestResponse<Unit>> Handle(EnrollStudentInDiplomaCommand request, CancellationToken cancellationToken)
         {
-            var existingEnrollment = await _enrollmentRepo.GetAll()
-               .Where(se => se.StudentId == request.StudentId && se.DiplomaId == request.DiplomaId)
-               .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-            if (existingEnrollment != null)
+            var existingEnrollment = await _mediator.Send(new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(request.StudentId, request.DiplomaId));
+
+            if (existingEnrollment.Success)
                 return RequestResponse<Unit>.Fail("User is already enrolled in the diploma.");
 
-            var enrollment = new StudentEnrollment 
-            { 
+            var enrollment = new StudentEnrollment
+            {
                 StudentId = request.StudentId,
                 DiplomaId = request.DiplomaId,
             };
@@ -48,7 +44,6 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
             return RequestResponse<Unit>.Ok(Unit.Value, "Enrollment successful.");
 
         }
-        #endregion
 
     }
 }

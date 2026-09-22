@@ -26,7 +26,7 @@ namespace exam_system.Features.Quizzes.AdminUnpublishQuiz.Handlers
 
             //2.Count In Progress Quiz Attempts :
             var count = await _attemptRepository.CountAsync(
-                attempt => attempt.QuizId == request.QuizId && 
+                attempt => attempt.QuizId == request.QuizId &&
                 attempt.Status == AttemptStatus.InProgress &&
                !attempt.IsDeleted);
 

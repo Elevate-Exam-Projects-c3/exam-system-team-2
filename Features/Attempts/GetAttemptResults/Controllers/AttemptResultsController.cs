@@ -30,9 +30,9 @@ namespace exam_system.Features.Attempts.GetAttemptResults.Controllers
 
             var result = await _mediator.Send(new GetAttemptResultsQuery(attemptId, callerUserId));
 
-            var viewModelResult = result.MapTo( dto => dto.ToViewModel());
+            var viewModelResult = result.MapTo(dto => dto.ToViewModel());
 
-            return StatusCode(viewModelResult.StatusCode,EndpointResponse<AttemptResultsViewModel>.FromResult(viewModelResult));
+            return StatusCode(viewModelResult.StatusCode, EndpointResponse<AttemptResultsViewModel>.FromResult(viewModelResult));
         }
     }
 }

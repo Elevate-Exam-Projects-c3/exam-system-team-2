@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
 {
-    public class GetDiplomaDetailQueryHandler:IRequestHandler<GetDiplomaDetailByIdQuery, RequestResponse<DiplomaDetailDto?>>
+    public class GetDiplomaDetailQueryHandler : IRequestHandler<GetDiplomaDetailByIdQuery, RequestResponse<DiplomaDetailDto?>>
     {
         private readonly IGenericRepository<Diploma> _diplomaRepo;
         public GetDiplomaDetailQueryHandler(IGenericRepository<Diploma> diplomaRepo)
@@ -28,7 +28,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
             if (exsitingDiploma == null)
                 return RequestResponse<DiplomaDetailDto?>
                     .Fail($"Diploma with Id = {request.DiplomaId} not found.", 404);
-            
+
             var diplomaDto = new DiplomaDetailDto()
             {
                 Id = exsitingDiploma.Id,
@@ -37,7 +37,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
                 ImageUrl = exsitingDiploma.ImageUrl,
             };
 
-            return RequestResponse<DiplomaDetailDto?>.Ok(diplomaDto, 
+            return RequestResponse<DiplomaDetailDto?>.Ok(diplomaDto,
                 "Diploma retrieved successfully.");
         }
     }

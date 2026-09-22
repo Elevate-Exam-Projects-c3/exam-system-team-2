@@ -7,7 +7,7 @@ public class ApiResponse<T>
     public string Message { get; set; } = string.Empty;
     public T? Data { get; set; }
     public IDictionary<string, string[]>? Errors { get; set; }
-    public DateTime Timestamp {  get; set; } = DateTime.UtcNow;
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
     public ApiResponse() { }
 
