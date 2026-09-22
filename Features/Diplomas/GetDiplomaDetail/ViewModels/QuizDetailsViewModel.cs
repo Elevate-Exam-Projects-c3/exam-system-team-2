@@ -1,6 +1,6 @@
-﻿namespace exam_system.Features.Diplomas.GetDiplomaDetail.Dtos
+﻿namespace exam_system.Features.Diplomas.GetDiplomaDetail.ViewModels
 {
-    public class QuizDetailsDto
+    public class QuizDetailsViewModel
     {
         public Guid Id { get; set; }
         public required string Title { get; set; }
