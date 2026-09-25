@@ -5,6 +5,7 @@ using exam_system.Features.Attempts.StartAttempt.Queries;
 using exam_system.Features.Shared;
 using exam_system.Persistence.DataAccess;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Attempts.StartAttempt.Handlers
 {
@@ -18,13 +19,14 @@ namespace exam_system.Features.Attempts.StartAttempt.Handlers
         }
         public async Task<RequestResponse<AttemptStatusDto>> Handle(GetExistStudentAttemptQuery request, CancellationToken cancellationToken)
         {
-            var attempt = _quizAttemptRepository.Get(a => a.StudentId == request.StudentId && a.QuizId == request.QuizId).
-                                                 Select(a => new AttemptStatusDto
+            var attempt = await _quizAttemptRepository.Get(a => a.StudentId == request.StudentId && a.QuizId == request.QuizId)
+                                                 .OrderByDescending(s => s.CreatedAt)
+                                                 .Select(a => new AttemptStatusDto
                                                  {
                                                      AttemptId = a.Id,
                                                      StudentId = a.StudentId,
                                                      Status = a.Status
-                                                 }).FirstOrDefault();
+                                                 }).FirstOrDefaultAsync();
 
             if(attempt is not null)
             {

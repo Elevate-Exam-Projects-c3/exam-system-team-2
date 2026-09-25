@@ -4,5 +4,5 @@ using MediatR;
 
 namespace exam_system.Features.Attempts.StartAttempt.Commands
 {
-    public record StartAttemptCommand(Guid QuizId, Guid StudentId) : IRequest<ApiResponse<bool>>;
+    public record StartAttemptOrchestrator(Guid QuizId, Guid StudentId) : IRequest<RequestResponse<StartAttemptResponseDto>>;
 }
