@@ -24,14 +24,13 @@ namespace exam_system.Features.Diplomas.GetStudentDashboard.Handlers
 
             var studentId = _currentUser.GetStudentId();
             //var studentId = Guid.Parse("AAAAAAAA-1111-1111-1111-AAAAAAAAAAAA");
-            if (studentId == null)
+            if (!studentId.HasValue)
                 return RequestResponse<StudentDashboardDto>
                     .Fail("User is not authenticated.", 401);
 
-
             // 1. Retrieve basic information about the current student.
             var student = await _mediator.Send(
-                new StudentDetailsQuery(studentId),
+                new StudentDetailsQuery(studentId.Value),
                 cancellationToken);
 
             if (!student.Success || student.Data == null)
@@ -43,7 +42,7 @@ namespace exam_system.Features.Diplomas.GetStudentDashboard.Handlers
 
             // 2. Retrieve only diplomas in which the current student is enrolled.
             var studentEnrollmentDiplomas = await _mediator.Send(
-                new StudentEnrolledDiplomasQuery(studentId),
+                new StudentEnrolledDiplomasQuery(studentId.Value),
                 cancellationToken);
 
             if (!studentEnrollmentDiplomas.Success ||
@@ -56,7 +55,7 @@ namespace exam_system.Features.Diplomas.GetStudentDashboard.Handlers
 
             // 3. Retrieve the latest submitted attempt for each quiz.
             var studentAttempts = await _mediator.Send(
-                new StudentQuizAttemptsQuery(studentId),
+                new StudentQuizAttemptsQuery(studentId.Value),
                 cancellationToken);
 
             if (!studentAttempts.Success || studentAttempts.Data == null)
