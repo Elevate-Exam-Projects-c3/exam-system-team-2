@@ -25,14 +25,15 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Controllers
         {
             var requestResponse = await _mediator.Send(new GetAllDiplomasQuery(pageNumber, pageSize), cancellationToken);
 
-            var endpointResponse = new EndpointResponse<PaginatedResult<DiplomaDto>>
-            {
-                Success = requestResponse.Success,
-                Message = requestResponse.Message,
-                Data = requestResponse.Data
-            };
+            var endpointResponse =
+             EndpointResponse<PaginatedResult<DiplomaDto>>.FromResult(
+                 requestResponse);
+
             if (!endpointResponse.Success)
-                return BadRequest(endpointResponse);
+            {
+                return StatusCode(
+                    endpointResponse.StatusCode, endpointResponse);
+            }
 
             return Ok(endpointResponse);
         }
