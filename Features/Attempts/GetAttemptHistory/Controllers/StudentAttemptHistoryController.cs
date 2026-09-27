@@ -73,5 +73,5 @@ namespace exam_system.Features.Attempts.GetAttemptHistory.Controllers
                 return Ok(endpointResponse);
             }
         }
-    }
+    
 }
