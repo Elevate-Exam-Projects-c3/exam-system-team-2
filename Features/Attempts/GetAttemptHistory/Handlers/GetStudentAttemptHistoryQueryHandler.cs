@@ -20,48 +20,35 @@ namespace exam_system.Features.Attempts.GetAttemptHistory.Handlers
         }
         public async Task<RequestResponse<PaginatedResult<StudentAttemptDto>>> Handle (GetStudentAttemptHistoryQuery request, CancellationToken cancellationToken)
         {
-            //var studentId = _currentUserId.GetStudentId();
-            var studentId = Guid.Parse("AAAAAAAA-1111-1111-1111-AAAAAAAAAAAA");
-            //if (!studentId.HasValue)
-            //    return RequestResponse< PaginatedResult<StudentAttemptDto>>.Fail("Student not authenticated.");
+            var studentId = _currentUserId.GetStudentId();
+            //var studentId = Guid.Parse("AAAAAAAA-1111-1111-1111-AAAAAAAAAAAA");
+            if (!studentId.HasValue)
+                    return RequestResponse< PaginatedResult<StudentAttemptDto>>.Fail("Student not authenticated.");
 
-            var totalCount = await _attemptRepo.GetAll()
-                .CountAsync(a => a.StudentId == studentId, cancellationToken);
+                var totalCount = await _attemptRepo.GetAll()
+                .CountAsync(a => a.StudentId == studentId.Value, cancellationToken);
 
             var skip = (request.PageNumber - 1) * request.PageSize;
 
             var studentAttempts = await _attemptRepo
-        .GetAll()
-        .Where(a => a.StudentId == studentId)
-
-        .OrderByDescending(a => a.StartTime)
-
-        .Skip(skip)
-        .Take(request.PageSize)
-
-        .Select(attempt => new StudentAttemptDto
-        {
-            QuizTitle = attempt.Quiz.Title,
-
-            Status = attempt.Status,
-
-            Score = attempt.Score,
-
-            SubmittedAt = attempt.SubmittedAt,
-
-            QuizQuestionsCount = attempt.Quiz.Questions.Count(),
-
-            CorrectAnswerCount = attempt.Answers
-                .Count(a => a.IsCorrect == true),
-
-            QuizDurationMinutes = attempt.Quiz.DurationMinutes,
-
-            AttemptTakeTimeInMin = attempt.SubmittedAt.HasValue
-                ? (int)(attempt.SubmittedAt.Value - attempt.StartTime).TotalMinutes
-                : null
-        })
-        .AsNoTracking()
-        .ToListAsync(cancellationToken);
+                .GetAll()
+                .Where(a => a.StudentId == studentId.Value)
+                .OrderByDescending(a => a.StartTime)
+                .Skip(skip)
+                .Take(request.PageSize)
+                .Select(attempt => new StudentAttemptDto
+                {
+                    QuizTitle = attempt.Quiz.Title,
+                    Status = attempt.Status,Score = attempt.Score,
+                    SubmittedAt = attempt.SubmittedAt,
+                    QuizQuestionsCount = attempt.Quiz.Questions.Count(),
+                    CorrectAnswerCount = attempt.Answers.Count(a => a.IsCorrect == true),
+                    QuizDurationMinutes = attempt.Quiz.DurationMinutes,
+                    AttemptTakeTimeInMin = attempt.SubmittedAt.HasValue? 
+                        (int)(attempt.SubmittedAt.Value - attempt.StartTime).TotalMinutes: null
+                })
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
 
             var paginatedResult = PaginatedResult<StudentAttemptDto>.Create(
                 studentAttempts,
