@@ -44,8 +44,11 @@ public class UnitOfWork : IUnitOfWork
                 {
                     await _transaction.RollbackAsync(CancellationToken.None);
                 }
-                catch
-                {                     // Handle rollback failure if necessary
+                catch//(Exception rollbackException)
+                {
+                    //_logger.LogError(
+                    //      rollbackException,
+                    //      "Failed to rollback the transaction.");
                 }
             }
             throw; 
