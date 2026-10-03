@@ -2,6 +2,7 @@
 using exam_system.Features.Quizzes.AdminPublishQuiz.Orchestrators;
 using exam_system.Features.Quizzes.AdminQuizPublishCheck.Queries;
 using exam_system.Features.Shared;
+using exam_system.Persistence.DataAccess;
 using MediatR;
 
 namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
@@ -9,10 +10,12 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
     public class PublishQuizOrchestratorHandler : IRequestHandler<PublishQuizOrchestrator, RequestResponse<PublishQuizResult>>
     {
         private readonly IMediator _mediator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PublishQuizOrchestratorHandler(IMediator mediator)
+        public PublishQuizOrchestratorHandler(IMediator mediator , IUnitOfWork unitOfWork)
         {
             _mediator = mediator;
+            _unitOfWork = unitOfWork;
         }
         public async Task<RequestResponse<PublishQuizResult>> Handle(
             PublishQuizOrchestrator request,
@@ -41,11 +44,18 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
                     "Quiz is not ready to be published. Please fix the failing checks.", result, 400);
             }
 
-            // 5. Publish the quiz
-            var publishResult = await _mediator.Send(new PublishQuizCommand(request.QuizId), cancellationToken);
+            // 5. Publish the quiz inside the Unit of Work transaction :
+            RequestResponse? publishResult = null;
+
+            await _unitOfWork.ExecuteAsync(
+                async () =>
+                {
+                    publishResult = await _mediator.Send(new PublishQuizCommand(request.QuizId),cancellationToken);
+                },
+                cancellationToken);
 
             // 6. If publishing failed
-            if (!publishResult.Success)
+            if (!publishResult!.Success)
             {
                 return RequestResponse<PublishQuizResult>.Fail(
                     publishResult.Message,

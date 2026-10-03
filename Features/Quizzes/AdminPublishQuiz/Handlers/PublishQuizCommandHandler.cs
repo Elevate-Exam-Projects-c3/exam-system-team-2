@@ -11,14 +11,10 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
        : IRequestHandler<PublishQuizCommand, RequestResponse>
     {
         private readonly IGenericRepository<Quiz> _quizRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public PublishQuizCommandHandler(
-            IGenericRepository<Quiz> quizRepository,
-            IUnitOfWork unitOfWork)
+        public PublishQuizCommandHandler(IGenericRepository<Quiz> quizRepository)
         {
             _quizRepository = quizRepository;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<RequestResponse> Handle(PublishQuizCommand request, CancellationToken cancellationToken)
@@ -34,8 +30,6 @@ namespace exam_system.Features.Quizzes.AdminPublishQuiz.Handlers
             quiz.PublishedAt = DateTime.UtcNow;
 
             _quizRepository.Update(quiz);
-
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return RequestResponse.Ok("Quiz published successfully.", 200);
         }
