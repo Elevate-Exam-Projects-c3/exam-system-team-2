@@ -27,7 +27,7 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
         public async Task<RequestResponse<Unit>> Handle(EnrollDiplomaOrchestrator request, CancellationToken cancellationToken)
         {
             //var studentId = _currentUserId.GetStudentId();
-            var studentId = Guid.Parse("AAAAAAAA-1111-1111-1111-AAAAAAAAAAAA");
+            var studentId = Guid.Parse("CCCCCCCC-3333-3333-3333-CCCCCCCCCCCC");
             if (studentId == null)
                 return RequestResponse<Unit>.Fail("Student profile not found.", 403);
 
