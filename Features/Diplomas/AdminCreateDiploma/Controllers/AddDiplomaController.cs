@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 {
-    [Tags(tags: "Diplomas")]
-    //[Authorize(Roles = "Admin")]
-    [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
+    [Route("api/Diplomas")]
     [ApiController]
     public class AddDiplomaController : ControllerBase
     {
