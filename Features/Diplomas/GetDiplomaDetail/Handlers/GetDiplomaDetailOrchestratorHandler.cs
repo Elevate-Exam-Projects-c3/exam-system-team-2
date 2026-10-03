@@ -20,6 +20,8 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
         public async Task<RequestResponse<ViewDiplomaDetailsDto>> Handle(GetDiplomaDetailOrchestrator request, CancellationToken cancellationToken)
         {
             var studentId = _currentUserId.GetStudentId();
+            //var studentId = Guid.Parse("AAAAAAAA-1111-1111-1111-AAAAAAAAAAAA");
+
             if (studentId == null)
                 return RequestResponse<ViewDiplomaDetailsDto>
                     .Fail("Unauthorized.", 401);
@@ -42,7 +44,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
 
 
             var diplomaDto = diplomaQuery.Data;
-            var diplomaQuizzes = quizQuery.Data.ToList(); //why here worning nullable
+            var diplomaQuizzes = quizQuery.Data.ToList(); 
 
             var quizIds = diplomaQuizzes
                 .Select(q => q.Id)

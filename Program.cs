@@ -2,6 +2,7 @@ using System.Reflection;
 using exam_system.Common;
 using exam_system.Common.Behaviors;
 using exam_system.Domain.Entities.Diplomas;
+using exam_system.Endpoints;
 using exam_system.Features.Shared.CurrentUser;
 using exam_system.Persistence;
 using exam_system.Persistence.Context;
@@ -99,5 +100,6 @@ app.MapGet("/api/test/diplomas", async (IGenericRepository<Diploma> diplomaRepo,
 .WithTags("Test");
 
 app.MapControllers();
+app.MapDiplomaEndpoints();
 
 app.Run();
