@@ -29,7 +29,7 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 
             var existingEnrollment = await _mediator.Send(new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(request.StudentId, request.DiplomaId));
 
-            if (existingEnrollment.Success)
+            if (existingEnrollment.Data == false)
                 return RequestResponse<Unit>.Fail("User is already enrolled in the diploma.");
 
             var enrollment = new StudentEnrollment

@@ -23,9 +23,9 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 
         public async Task<RequestResponse<Unit>> Handle(EnrollDiplomaOrchestrator request, CancellationToken cancellationToken)
         {
-            var studentId = _currentUserId.GetStudentId() ?? _currentUserId.GetUserId();
+            var studentId = _currentUserId.GetStudentId();
             if (studentId == null)
-                return RequestResponse<Unit>.Fail("User is not authenticated.", 401);
+                return RequestResponse<Unit>.Fail("Student profile not found.", 403);
 
             var diplomaExsist = await _mediator.Send(new CheckIfDiplomaExistsQueryQuery(request.DiplomaId), cancellationToken);
             if (!diplomaExsist.Success)

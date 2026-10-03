@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
 {
-    [Tags(tags: "Diplomas")]
-    //[Authorize(Roles = "Admin")]
-    [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
+    [Route("api/Diplomas")]
     [ApiController]
     public class AddDiplomaController : ControllerBase
     {
@@ -31,16 +30,9 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Controllers
                     diplomaViewModel.Description,
                     diplomaViewModel.ImageUrl), cancellationToken);
 
-            var endpointResponse = new EndpointResponse
-            {
-                Success = requestResponse.Success,
-                Message = requestResponse.Message,
-                Data = requestResponse.Data
-            };
-            if (!endpointResponse.Success)
-                return BadRequest(endpointResponse);
+            var endpointResponse = EndpointResponse<Unit>.FromResult(requestResponse);
 
-            return StatusCode(StatusCodes.Status201Created, requestResponse);
+            return StatusCode(endpointResponse.StatusCode, endpointResponse);
         }
 
     }

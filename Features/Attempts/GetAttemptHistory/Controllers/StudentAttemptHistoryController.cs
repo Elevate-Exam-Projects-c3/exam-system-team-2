@@ -62,15 +62,16 @@ namespace exam_system.Features.Attempts.GetAttemptHistory.Controllers
                     HasNextPage = data.HasNextPage
                 };
 
-                var endpointResponse =
-                    new EndpointResponse<StudentAttemptsHistoryViewModel>
-                    {
-                        Success = requestResponse.Success,
-                        Message = requestResponse.Message,
-                        Data = viewModel
-                    };
+            var endpointResponse = new EndpointResponse<StudentAttemptsHistoryViewModel>
+            {
+                Success = requestResponse.Success,
+                StatusCode = requestResponse.StatusCode,
+                Message = requestResponse.Message,
+                Data = viewModel,
+                Errors = requestResponse.Errors
+            };
 
-                return Ok(endpointResponse);
+                return StatusCode(endpointResponse.StatusCode, endpointResponse);
             }
         }
     

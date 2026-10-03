@@ -11,7 +11,7 @@ using System.Security.Claims;
 namespace exam_system.Features.Diplomas.EnrollDiploma.Controllers
 {
     [Tags(tags: "Diplomas")]
-    //[Authorize(Roles = "Student")]
+    [Authorize(Roles = "Student")]
     [Route("api/[controller]")]
     [ApiController]
     public class EnrollDiplomaController : ControllerBase
@@ -29,16 +29,9 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Controllers
         {
             var requestResponse = await _mediator.Send(new EnrollDiplomaOrchestrator(diplomaId), cancellationToken);
 
-            var endpointResponse = new EndpointResponse
-            {
-                Success = requestResponse.Success,
-                Message = requestResponse.Message,
-                Data = requestResponse.Data
-            };
-            if (!endpointResponse.Success)
-                return BadRequest(endpointResponse);
-
-            return Ok(endpointResponse);
+            var endpointResponse = EndpointResponse<Unit>.FromResult(requestResponse);
+            
+            return StatusCode(endpointResponse.StatusCode, endpointResponse);
         }
     }
 }

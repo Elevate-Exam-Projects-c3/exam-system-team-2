@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Controllers
 {
     [Tags(tags: "Diplomas")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UpdateDiplomaController : ControllerBase
@@ -29,17 +29,9 @@ namespace exam_system.Features.Diplomas.AdminUpdateDiploma.Controllers
         {
             var requestResponse = await _mediator.Send(new UpdateDiplomaCommand(id, diploma.Title, diploma.Description, diploma.ImageUrl), cancellationToken);
 
-            var endpointResponse = new EndpointResponse
-            {
-                Success = requestResponse.Success,
-                Message = requestResponse.Message,
-                Data = requestResponse.Data
-            };
+            var endpointResponse = EndpointResponse<Unit>.FromResult(requestResponse);
 
-            if (!endpointResponse.Success)
-                return BadRequest(endpointResponse);
-
-            return Ok(endpointResponse);
+            return StatusCode(endpointResponse.StatusCode, endpointResponse);
         }
     }
 }
