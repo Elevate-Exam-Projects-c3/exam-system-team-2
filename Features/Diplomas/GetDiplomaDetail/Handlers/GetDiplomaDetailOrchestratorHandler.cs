@@ -75,7 +75,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
                 }
                 else
                 {
-                    canStudentAttempt = attemptCount < quiz.MaxAttempts;
+                    canStudentAttempt = quiz.MaxAttempts is null || attemptCount < quiz.MaxAttempts;
                 }
 
                 return new DiplomaQuizDetailsDto

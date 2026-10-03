@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.AdminCreateDiploma.Handlers
 {
-    public class AddDiplomaCommandHandler : IRequestHandler<AddDiplomaCommand, RequestResponse<Guid>>
+    public class AddDiplomaCommandHandler : IRequestHandler<AddDiplomaCommand, RequestResponse<Unit>>
     {
         private readonly IGenericRepository<Diploma> _diplomaRepo;
         private readonly IUnitOfWork _unitOfWork;
@@ -19,7 +19,7 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Handlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<RequestResponse<Guid>> Handle(AddDiplomaCommand request, CancellationToken cancellationToken)
+        public async Task<RequestResponse<Unit>> Handle(AddDiplomaCommand request, CancellationToken cancellationToken)
         {
             var diplomaExists = await _diplomaRepo
                 .GetAll()
@@ -27,7 +27,7 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Handlers
 
 
             if (diplomaExists)
-                return RequestResponse<Guid>.Fail($"Diploma with title {request.Title} title already exists.");
+                return RequestResponse<Unit>.Fail($"Diploma with title {request.Title} title already exists.");
 
 
             var diploma = new Diploma
@@ -40,7 +40,7 @@ namespace exam_system.Features.Diplomas.AdminCreateDiploma.Handlers
             await _diplomaRepo.AddAsync(diploma);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return RequestResponse<Guid>.Ok(diploma.Id, "Diploma added successfully.");
+            return RequestResponse<Unit>.Ok(Unit.Value, "Diploma added successfully.");
         }
     }
 }

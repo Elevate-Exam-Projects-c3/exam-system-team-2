@@ -30,7 +30,7 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Controllers
             if (!requestResponse.Success)
                 return BadRequest(requestResponse);
 
-            var dto = requestResponse.Data;
+            var dto = requestResponse.Data!;
 
 
             var viewModel = new ViewDiplomaDetailsViewModel
@@ -61,16 +61,8 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Controllers
                 }).ToList()
             };
 
-
-            var endpointResponse = new EndpointResponse
-            {
-                Success = requestResponse.Success,
-                Message = requestResponse.Message,
-                Data = viewModel
-            };
-            
-
-            return Ok(endpointResponse);
+            var endpointResponse = EndpointResponse<ViewDiplomaDetailsViewModel>.FromResult(requestResponse);
+            return StatusCode(endpointResponse.StatusCode, endpointResponse);
         }
     }
 }

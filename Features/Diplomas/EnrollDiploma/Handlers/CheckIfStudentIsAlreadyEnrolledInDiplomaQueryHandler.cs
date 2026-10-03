@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
 {
-    public class CheckIfStudentIsAlreadyEnrolledInDiplomaQueryHandler : IRequestHandler<CheckIfStudentIsAlreadyEnrolledInDiplomaQuery, RequestResponse<Unit>>
+    public class CheckIfStudentIsAlreadyEnrolledInDiplomaQueryHandler : IRequestHandler<CheckIfStudentIsAlreadyEnrolledInDiplomaQuery, RequestResponse<bool>>
     {
         private readonly IGenericRepository<StudentEnrollment> _enrollmentRepo;
         public CheckIfStudentIsAlreadyEnrolledInDiplomaQueryHandler(IGenericRepository<StudentEnrollment> enrollmentRepo)
@@ -15,17 +15,12 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
             _enrollmentRepo = enrollmentRepo;
         }
 
-        public async Task<RequestResponse<Unit>> Handle(CheckIfStudentIsAlreadyEnrolledInDiplomaQuery request, CancellationToken cancellationToken)
+        public async Task<RequestResponse<bool>> Handle(CheckIfStudentIsAlreadyEnrolledInDiplomaQuery request, CancellationToken cancellationToken)
         {
-            var existingEnrollment = await _enrollmentRepo
-                .GetAll()
-                .Where(se => se.StudentId == request.studentId && se.DiplomaId == request.diplomaId)
-                .AnyAsync(cancellationToken);
+            var existingEnrollment = await _enrollmentRepo.GetAll()
+                .AnyAsync(se => se.StudentId == request.studentId && se.DiplomaId == request.diplomaId,cancellationToken);
 
-            if (!existingEnrollment)
-                return RequestResponse<Unit>.Fail("User is not enrolled in the diploma.");
-
-            return RequestResponse<Unit>.Ok(Unit.Value, "Student is already enrolled in the diploma.");
+            return RequestResponse<bool>.Ok(existingEnrollment);
         }
     }
 }

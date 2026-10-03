@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace exam_system.Features.Diplomas.BrowseDiplomas.Controllers
 {
     [Tags(tags: "Diplomas")]
-    //[Authorize(Roles = "Student,Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class BrowseDiplomasController : ControllerBase
@@ -29,13 +28,10 @@ namespace exam_system.Features.Diplomas.BrowseDiplomas.Controllers
              EndpointResponse<PaginatedResult<DiplomaDto>>.FromResult(
                  requestResponse);
 
-            if (!endpointResponse.Success)
-            {
+           
                 return StatusCode(
                     endpointResponse.StatusCode, endpointResponse);
-            }
 
-            return Ok(endpointResponse);
         }
     }
 }

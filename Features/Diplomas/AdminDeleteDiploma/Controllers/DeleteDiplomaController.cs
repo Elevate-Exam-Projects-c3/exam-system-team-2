@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
 {
     [Tags(tags: "Diplomas")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class DeleteDiplomaController : ControllerBase
@@ -29,16 +29,9 @@ namespace exam_system.Features.Diplomas.AdminDeleteDiploma.Controllers
             var requestResponse = await _mediator.Send(
                 new DeleteDiplomaCommand(id), cancellationToken);
 
-            var endpointResponse = new EndpointResponse
-            {
-                Success = requestResponse.Success,
-                Message = requestResponse.Message,
-                Data = requestResponse.Data
-            };
-            if (!endpointResponse.Success)
-                return BadRequest(endpointResponse);
-
-            return Ok(endpointResponse);
+            var endpointResponse = EndpointResponse<Unit>.FromResult(requestResponse);
+           
+            return StatusCode(endpointResponse.StatusCode, endpointResponse);
         }
     }
 }
