@@ -27,21 +27,30 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
         public async Task<RequestResponse<Unit>> Handle(EnrollStudentInDiplomaCommand request, CancellationToken cancellationToken)
         {
 
-            var existingEnrollment = await _mediator.Send(new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(request.StudentId, request.DiplomaId));
-
-            if (existingEnrollment.Success)
-                return RequestResponse<Unit>.Fail("User is already enrolled in the diploma.");
-
-            var enrollment = new StudentEnrollment
+            RequestResponse<Unit>? result = null;
+            await _unitOfWork.ExecuteAsync(async ct =>
             {
-                StudentId = request.StudentId,
-                DiplomaId = request.DiplomaId,
-            };
+                var existingEnrollment = await _mediator.Send(new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(request.StudentId, request.DiplomaId), ct);
 
-            await _enrollmentRepo.AddAsync(enrollment);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                if (existingEnrollment.Success)
+                {
+                    result = RequestResponse<Unit>.Fail("User is already enrolled in the diploma.");
+                    return;
+                }
 
-            return RequestResponse<Unit>.Ok(Unit.Value, "Enrollment successful.");
+                var enrollment = new StudentEnrollment
+                {
+                    StudentId = request.StudentId,
+                    DiplomaId = request.DiplomaId,
+                };
+
+                await _enrollmentRepo.AddAsync(enrollment);
+                await _unitOfWork.SaveChangesAsync(ct);
+
+                result = RequestResponse<Unit>.Ok(Unit.Value, "Enrollment successful.");
+            }, cancellationToken);
+
+            return result!;
 
         }
 

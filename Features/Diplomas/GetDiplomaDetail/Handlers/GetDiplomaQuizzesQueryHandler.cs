@@ -25,26 +25,24 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
         {
 
             // 1. Get published quizzes for this diploma
-            var quizzes = await _quizRepo.GetAll()
+            var quizDtos = await _quizRepo.GetAll()
+                .AsNoTracking()
                 .Where(
                     q => q.DiplomaId == request.DiplomaId &&
                     q.Status == QuizStatus.Published)
-                .AsNoTracking()
+                .Select(q=>new QuizDetailsDto 
+                { 
+                    Id = q.Id,
+                    Title = q.Title, 
+                    DurationMinutes = q.DurationMinutes, 
+                    PassScore = q.PassScore, 
+                    MaxAttempts = q.MaxAttempts 
+                })
                 .ToListAsync(cancellationToken);
 
-            if (!quizzes.Any())
+            if (!quizDtos.Any())
                 return RequestResponse<IEnumerable<QuizDetailsDto>>
                     .Fail($"No published quizzes found for Diploma with Id = {request.DiplomaId}.", 404);
-
-            //Build Dtos
-            var quizDtos = quizzes.Select(q => new QuizDetailsDto
-            {
-                Id = q.Id,
-                Title = q.Title,
-                DurationMinutes = q.DurationMinutes,
-                PassScore = q.PassScore,
-                MaxAttempts = q.MaxAttempts
-            }).ToList();
 
             return RequestResponse<IEnumerable<QuizDetailsDto>>
                 .Ok(quizDtos, "Published quizzes retrieved successfully.");

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using exam_system.Features.Shared.CurrentUser;
 using exam_system.Features.Diplomas.EnrollDiploma.Queries;
 using exam_system.Features.Diplomas.EnrollDiploma.Commands;
+using exam_system.Persistence.DataAccess;
 
 
 namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
@@ -15,34 +16,50 @@ namespace exam_system.Features.Diplomas.EnrollDiploma.Handlers
     {
         private readonly IMediator _mediator;
         private readonly ICurrentUserId _currentUserId;
-        public EnrollDiplomaOrchestratorHandler(IMediator mediator, ICurrentUserId currentUserId)
+        private readonly IUnitOfWork _unitOfWork;
+        public EnrollDiplomaOrchestratorHandler(IMediator mediator, ICurrentUserId currentUserId, IUnitOfWork unitOfWork)
         {
             _mediator = mediator;
             _currentUserId = currentUserId;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<RequestResponse<Unit>> Handle(EnrollDiplomaOrchestrator request, CancellationToken cancellationToken)
         {
-            var studentId = _currentUserId.GetStudentId() ?? _currentUserId.GetUserId();
+            //var studentId = _currentUserId.GetStudentId();
+            var studentId = Guid.Parse("CCCCCCCC-3333-3333-3333-CCCCCCCCCCCC");
             if (studentId == null)
-                return RequestResponse<Unit>.Fail("User is not authenticated.", 401);
+                return RequestResponse<Unit>.Fail("Student profile not found.", 403);
 
-            var diplomaExsist = await _mediator.Send(new CheckIfDiplomaExistsQueryQuery(request.DiplomaId), cancellationToken);
-            if (!diplomaExsist.Success)
-                return RequestResponse<Unit>.Fail("Diploma does not exist.", 404);
+            RequestResponse<Unit>? result = null;
 
-            var isEnrolled = await _mediator.Send(
-                new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(studentId.Value, request.DiplomaId), cancellationToken);
+            await _unitOfWork.ExecuteAsync(async ct =>
+            {
+                var diplomaExsist = await _mediator.Send(new CheckIfDiplomaExistsQueryQuery(request.DiplomaId), ct);
+                if (!diplomaExsist.Success)
+                {
+                    result = RequestResponse<Unit>.Fail("Diploma does not exist.", 404);
+                    return;
+                }
+                var isEnrolled = await _mediator.Send(
+                    new CheckIfStudentIsAlreadyEnrolledInDiplomaQuery(studentId, request.DiplomaId), ct);
 
-            if (isEnrolled.Success)
-                return RequestResponse<Unit>.Fail(isEnrolled.Message, isEnrolled.StatusCode);
+                if (isEnrolled.Success)
+                {
+                    result = RequestResponse<Unit>.Fail(isEnrolled.Message, isEnrolled.StatusCode);
+                    return;
+                }
+                var enrollResponse = await _mediator.Send(new EnrollStudentInDiplomaCommand(studentId, request.DiplomaId), ct);
 
-            var enrollResponse = await _mediator.Send(new EnrollStudentInDiplomaCommand(studentId.Value, request.DiplomaId), cancellationToken);
+                if (!enrollResponse.Success)
+                {
+                    result = RequestResponse<Unit>.Fail("Enrollment failed.");
+                    return;
+                }
+                result = RequestResponse<Unit>.Ok(Unit.Value, "Enrollment successful.");
+            }, cancellationToken);
 
-            if (!enrollResponse.Success)
-                return RequestResponse<Unit>.Fail("Enrollment failed.");
-
-            return RequestResponse<Unit>.Ok(Unit.Value, "Enrollment successful.");
+            return result!;
         }
     }
 }
