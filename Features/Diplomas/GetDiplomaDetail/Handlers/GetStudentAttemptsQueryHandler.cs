@@ -19,27 +19,18 @@ namespace exam_system.Features.Diplomas.GetDiplomaDetail.Handlers
 
         public async Task<RequestResponse<IEnumerable<StudentAttemptDto>>> Handle(GetStudentAttemptsQuery request, CancellationToken cancellationToken)
         {
-            var attempts = await _attemptRepo.GetAll()
+            var studentAttempts = await _attemptRepo.GetAll()
+                .AsNoTracking()
                 .Where(a => a.StudentId == request.StudentId &&
                 request.QuizIds.Contains(a.QuizId))
-                .ToListAsync(cancellationToken);
-
-
-            var studentAttempts = request.QuizIds.Select(quizId =>
-            {
-                var quizAttempts = attempts
-                    .Where(a => a.QuizId == quizId)
-                    .ToList();
-
-
-                return new StudentAttemptDto
+                .GroupBy(a => a.QuizId)
+                .Select(g => new StudentAttemptDto
                 {
-                    QuizId = quizId,
-                    AttemptCount = quizAttempts.Count,
-                    IsResumable = quizAttempts.Any(
-                        a => a.Status == AttemptStatus.InProgress)
-                };
-            }).ToList();
+                    QuizId = g.Key,
+                    AttemptCount = g.Count(),
+                    IsResumable = g.Any(a => a.Status == AttemptStatus.InProgress)
+                })
+                .ToListAsync(cancellationToken);
 
             return RequestResponse<IEnumerable<StudentAttemptDto>>.Ok(
                 studentAttempts,
